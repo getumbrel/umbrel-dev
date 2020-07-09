@@ -1,7 +1,7 @@
 Vagrant.configure(2) do |config|
   config.vm.box = "debian/buster64"
   config.vm.hostname = "umbrel-dev"
-  config.vm.network "public_network"
+  config.vm.network "public_network", bridge: "en0: Wi-Fi (AirPort)"
 
   # Configure similar specs to a Raspberry Pi
   config.vm.provider "virtualbox" do |vb|
