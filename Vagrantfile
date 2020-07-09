@@ -7,4 +7,9 @@ Vagrant.configure(2) do |config|
     vb.customize ["modifyvm", :id, "--memory", "4096"]
     vb.customize ["modifyvm", :id, "--cpus", "2"]
   end
+
+  # Provision Docker
+  config.vagrant.plugins = "vagrant-docker-compose"
+  config.vm.provision :docker
+  config.vm.provision :docker_compose
 end
