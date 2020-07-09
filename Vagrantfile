@@ -19,10 +19,12 @@ Vagrant.configure(2) do |config|
     # Install Umbrel
     apt-get update
     apt-get install -y git
-    curl "https://raw.githubusercontent.com/getumbrel/umbrel/v0.1.3-beta/install-box.sh" | sh
+    git clone https://github.com/getumbrel/umbrel.git
+    cd umbrel
     REGTEST=1 ./configure-box.sh
     sudo chown -R 1000:1000 lnd/ bitcoin/
     sed -i 's/umbrel.local/#{config.vm.hostname}.local/g' docker-compose.yml
+    cd ..
 
     # Install Avahi
     apt-get install -y avahi-daemon avahi-discover libnss-mdns
