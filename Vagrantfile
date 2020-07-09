@@ -21,4 +21,7 @@ Vagrant.configure(2) do |config|
     REGTEST=1 ./configure-box.sh
     sudo chown -R 1000:1000 lnd/ bitcoin/
   SHELL
+
+  # Message
+  config.vm.post_up_message = "Umbrel dev environment ready!"
 end
