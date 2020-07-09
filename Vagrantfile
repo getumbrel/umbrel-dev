@@ -29,5 +29,5 @@ Vagrant.configure(2) do |config|
   SHELL
 
   # Message
-  config.vm.post_up_message = "Umbrel dev environment ready!"
+  config.vm.post_up_message = "Umbrel development environment ready: http://#{config.vm.hostname}.local"
 end
