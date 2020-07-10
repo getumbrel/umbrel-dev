@@ -16,6 +16,7 @@ Commands:
     halt                    Halt the development VM
     destroy                 Destroy the development VM
     rebuild [<container>]   Rebuild all or a specific container
+    logs                    Stream Umbrel logs
     run <command>           Run a command inside the development VM
     ssh                     Get an SSH session inside the development VM
 EOF
@@ -79,6 +80,12 @@ fi
 # TODO: Rebuild all or a specific container
 if [[ "$command" = "rebuild" ]]; then
   echo "Not yet implemented."
+  exit
+fi
+
+# Stream Umbrel logs
+if [[ "$command" = "logs" ]]; then
+  run "docker-compose logs -f"
   exit
 fi
 
