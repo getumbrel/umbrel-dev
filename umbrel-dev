@@ -21,6 +21,8 @@ Commands:
 EOF
 }
 
+# Check required dependencies are installed
+# If not, fail with instructions on how to fix
 check_dependencies() {
   for cmd in "git" "vagrant" "vboxmanage"; do
     if ! command -v $cmd >/dev/null 2>&1; then
