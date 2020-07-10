@@ -77,6 +77,11 @@ if [[ "$command" = "init" ]]; then
     "getumbrel/umbrel-dashboard getumbrel/dashboard"
   )
 
+  if [[ "$(ls -A)" ]]; then
+    echo "Working directory must be empty!"
+    exit 1
+  fi
+
   echo "Creating Vagrantfile..."
   cp "$(get_script_location)/Vagrantfile" .
 
