@@ -22,9 +22,14 @@ umbrelLogo = <<-TEXT
 TEXT
 
 Vagrant.configure(2) do |config|
+  # Install required plugins
+  config.vagrant.plugins = ["vagrant-vbguest", "vagrant-docker-compose"]
+
+  # Setup VM
   config.vm.box = "debian/buster64"
   config.vm.hostname = "umbrel-dev"
   config.vm.network "public_network", bridge: "en0: Wi-Fi (AirPort)"
+  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
 
   # Configure similar specs to a Raspberry Pi
   config.vm.provider "virtualbox" do |vb|
@@ -33,7 +38,6 @@ Vagrant.configure(2) do |config|
   end
 
   # Provision Docker
-  config.vagrant.plugins = "vagrant-docker-compose"
   config.vm.provision :docker
   config.vm.provision :docker_compose
 
