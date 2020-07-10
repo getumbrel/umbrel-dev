@@ -54,6 +54,7 @@ Vagrant.configure(2) do |config|
     REGTEST=1 ./configure-box.sh
     sudo chown -R 1000:1000 lnd/ bitcoin/
     sed -i 's/umbrel.local/#{config.vm.hostname}.local/g' docker-compose.yml
+    docker-compose up -d
   SHELL
 
   # Message
