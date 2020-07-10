@@ -40,48 +40,53 @@ run() {
   vagrant ssh -c "cd /vagrant/getumbrel/umbrel && $1"
 }
 
-# Show help text if no args set or help is called
-if [[ -z ${1+x} ]] || [[ "$1" = "help" ]]; then
-  show_help
-  exit 1
-fi
-
 # Check deps before running any commands
 check_dependencies
 
+if [ -z ${1+x} ]; then
+  command=""
+else
+  command="$1"
+fi
+
 # Initialize an Umbrel development environment in the working directory
-if [[ "$1" = "init" ]]; then
+if [[ "$command" = "init" ]]; then
   mkdir getumbrel
   git clone https://github.com/getumbrel/umbrel.git getumbrel/umbrel
   exit
 fi
 
 # Boot the development VM
-if [[ "$1" = "boot" ]]; then
+if [[ "$command" = "boot" ]]; then
   vagrant up
   exit
 fi
 
 # Halt the development VM
-if [[ "$1" = "halt" ]]; then
+if [[ "$command" = "halt" ]]; then
   vagrant halt
   exit
 fi
 
 # Destroy the development VM
-if [[ "$1" = "destroy" ]]; then
+if [[ "$command" = "destroy" ]]; then
   vagrant destroy
   exit
 fi
 
 # Run a command inside the development VM
-if [[ "$1" = "run" ]]; then
+if [[ "$command" = "run" ]]; then
   run "$2"
   exit
 fi
 
 # Get an SSH session inside the development VM
-if [[ "$1" = "ssh" ]]; then
+if [[ "$command" = "ssh" ]]; then
   run bash
   exit
 fi
+
+# If we get here it means no valid command was supplied
+# Show help and exit
+show_help
+exit 1
