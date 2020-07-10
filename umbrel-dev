@@ -15,7 +15,8 @@ Commands:
     boot                    Boot the development VM
     halt                    Halt the development VM
     destroy                 Destroy the development VM
-    rebuild <container>     Rebuild a container
+    containers              List container services
+    rebuild <container>     Rebuild a container service
     logs                    Stream Umbrel logs
     run <command>           Run a command inside the development VM
     ssh                     Get an SSH session inside the development VM
@@ -98,6 +99,12 @@ fi
 # Destroy the development VM
 if [[ "$command" = "destroy" ]]; then
   vagrant destroy
+  exit
+fi
+
+# List container services
+if [[ "$command" = "containers" ]]; then
+  run "docker-compose config --services"
   exit
 fi
 
