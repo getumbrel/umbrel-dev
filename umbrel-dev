@@ -51,6 +51,11 @@ halt() {
   vagrant halt
 }
 
+# Destroy the development VM
+destroy() {
+  vagrant destroy
+}
+
 # Show help text if no args set or help is called
 if [[ -z ${1+x} ]] || [[ "$1" = "help" ]]; then
   show_help
@@ -77,5 +82,12 @@ fi
 if [[ "$1" = "halt" ]]; then
   shift
   halt
+  exit
+fi
+
+# Destroy
+if [[ "$1" = "destroy" ]]; then
+  shift
+  destroy
   exit
 fi
