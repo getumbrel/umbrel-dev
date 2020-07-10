@@ -108,7 +108,7 @@ if [[ "$command" = "containers" ]]; then
   exit
 fi
 
-# TODO: Rebuild all or a specific container
+# Rebuild a container service
 if [[ "$command" = "rebuild" ]]; then
   if [ -z ${2+x} ]; then
     echo "A second argument is required!"
