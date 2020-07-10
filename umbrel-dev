@@ -21,6 +21,20 @@ Commands:
 EOF
 }
 
+check_dependencies() {
+  for cmd in "git" "vagrant" "vboxmanage"; do
+    if ! command -v $cmd >/dev/null 2>&1; then
+      echo "This script requires Git, VirtualBox and Vagrant to be installed."
+      echo
+      echo "You can install them with brew:"
+      echo
+      echo "  brew install git"
+      echo "  brew cask install vagrant virtualbox"
+      exit 1
+    fi
+  done
+}
+
 # Initialize an Umbrel development environment in the working directory
 init() {
   mkdir getumbrel
@@ -37,6 +51,9 @@ if [[ -z ${1+x} ]] || [[ "$1" = "help" ]]; then
   show_help
   exit 1
 fi
+
+# Check deps before running any commands
+check_dependencies
 
 # Init
 if [[ "$1" = "init" ]]; then
