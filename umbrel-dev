@@ -59,6 +59,18 @@ get_script_location() {
   echo $dir
 }
 
+check_umbrel_dev_environment() {
+  filename=".umbrel-dev"
+  dir=$PWD
+  while [ ! -e "$dir/$filename" ]; do
+    dir=${dir%/*}
+    if [[ "$dir" = "" ]]; then
+      echo "Error: This doesn't seem to be an umbrel-dev environment."
+      exit 1
+    fi
+  done
+}
+
 # Check deps before running any commands
 check_dependencies
 
@@ -99,6 +111,8 @@ if [[ "$command" = "init" ]]; then
     fi
   done
 
+  touch .umbrel-dev
+
   echo
   echo "Your development environment is now setup"
   echo "You can boot your development VM with:"
@@ -109,30 +123,35 @@ fi
 
 # Boot the development VM
 if [[ "$command" = "boot" ]]; then
+  check_umbrel_dev_environment
   vagrant up
   exit
 fi
 
 # Halt the development VM
 if [[ "$command" = "halt" ]]; then
+  check_umbrel_dev_environment
   vagrant halt
   exit
 fi
 
 # Destroy the development VM
 if [[ "$command" = "destroy" ]]; then
+  check_umbrel_dev_environment
   vagrant destroy
   exit
 fi
 
 # List container services
 if [[ "$command" = "containers" ]]; then
+  check_umbrel_dev_environment
   run_in_vm "docker-compose config --services"
   exit
 fi
 
 # Rebuild a container service
 if [[ "$command" = "rebuild" ]]; then
+  check_umbrel_dev_environment
   if [ -z ${2+x} ]; then
     echo "A second argument is required!"
     exit 1
@@ -148,12 +167,14 @@ fi
 
 # Stream Umbrel logs
 if [[ "$command" = "logs" ]]; then
+  check_umbrel_dev_environment
   run_in_vm "docker-compose logs -f"
   exit
 fi
 
 # Run a command inside the development VM
 if [[ "$command" = "run" ]]; then
+  check_umbrel_dev_environment
   if [ -z ${2+x} ]; then
     echo "A second argument is required!"
     exit 1
@@ -164,6 +185,7 @@ fi
 
 # Get an SSH session inside the development VM
 if [[ "$command" = "ssh" ]]; then
+  check_umbrel_dev_environment
   run_in_vm bash
   exit
 fi
