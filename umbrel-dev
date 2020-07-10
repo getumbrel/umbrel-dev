@@ -99,6 +99,12 @@ if [[ "$command" = "init" ]]; then
   echo "Creating Vagrantfile..."
   cp "$(get_script_location)/Vagrantfile" .
 
+  echo
+  vagrant plugin install vagrant-vbguest
+  echo
+  vagrant plugin install vagrant-docker-compose
+
+  echo
   echo "Cloning container repositories..."
   for ((i = 0; i < ${#repos[@]}; i++)); do
     repo="${repos[$i]}"
