@@ -91,6 +91,10 @@ fi
 
 # Run a command inside the development VM
 if [[ "$command" = "run" ]]; then
+  if [ -z ${2+x} ]; then
+    echo "A second argument is required!"
+    exit 1
+  fi
   run "$2"
   exit
 fi
