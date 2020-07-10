@@ -82,15 +82,6 @@ fi
 
 # Initialize an Umbrel development environment in the working directory
 if [[ "$command" = "init" ]]; then
-  # List of tuples
-  # github_repo docker_image
-  repos=(
-    "getumbrel/umbrel getumbrel/umbrel"
-    "getumbrel/umbrel-dashboard getumbrel/dashboard"
-    "getumbrel/umbrel-manager getumbrel/manager"
-    "getumbrel/umbrel-middleware getumbrel/middleware"
-  )
-
   if [[ "$(ls -A)" ]]; then
     echo "Working directory must be empty!"
     exit 1
@@ -106,6 +97,14 @@ if [[ "$command" = "init" ]]; then
 
   echo
   echo "Cloning container repositories..."
+  # List of tuples
+  # github_repo docker_image
+  repos=(
+    "getumbrel/umbrel getumbrel/umbrel"
+    "getumbrel/umbrel-dashboard getumbrel/dashboard"
+    "getumbrel/umbrel-manager getumbrel/manager"
+    "getumbrel/umbrel-middleware getumbrel/middleware"
+  )
   for ((i = 0; i < ${#repos[@]}; i++)); do
     repo="${repos[$i]}"
     github_repo="$(echo $repo | cut -d' ' -f1)"
