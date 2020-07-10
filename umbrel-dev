@@ -12,7 +12,7 @@ Usage: umbrel-dev <command> [options]
 Commands:
     help                    Show this help message
     init                    Initialize an Umbrel development environment in the working directory
-    up                      Boot the development VM
+    boot                    Boot the development VM
     halt                    Halt the development VM
     destroy                 Destroy the development VM
     rebuild [<container>]   Rebuild all or a specific container
@@ -27,6 +27,11 @@ init() {
   git clone https://github.com/getumbrel/umbrel.git getumbrel/umbrel
 }
 
+# Boot the development VM
+boot() {
+  vagrant up
+}
+
 # Show help text if no args set or help is called
 if [[ -z ${1+x} ]] || [[ "$1" = "help" ]]; then
   show_help
@@ -36,5 +41,11 @@ fi
 # Init
 if [[ "$1" = "init" ]]; then
   init
+  exit
+fi
+
+# Boot
+if [[ "$1" = "boot" ]]; then
+  boot
   exit
 fi
