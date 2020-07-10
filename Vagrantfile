@@ -1,3 +1,26 @@
+umbrelLogo = <<-TEXT
+              ,;###GGGGGGGGGGl#Sp
+           ,##GGGlW""^'  '`""%GGGG#S,
+         ,#GGG"                  "lGG#o
+        #GGl^                      '$GG#
+      ,#GGb                          \GGG,
+      lGG"                            "GGG
+     #GGGlGGGl##p,,p##lGGl##p,,p###ll##GGGG
+    !GGGlW"""*GGGGGGG#""""WlGGGGG#W""*WGGGGS
+     ""          "^          '"          ""
+
+
+                @GGS         lG#
+                !GGG        !GGG
+                !GGG        !GGG
+                !GGG        !GGG
+                !GGG        !GGG
+                !GGG        !GGG
+                'GGG        $GGl
+                 "GGG#psqp##GG#
+                   "%GGGGGG#"
+TEXT
+
 Vagrant.configure(2) do |config|
   config.vm.box = "debian/buster64"
   config.vm.hostname = "umbrel-dev"
@@ -34,5 +57,5 @@ Vagrant.configure(2) do |config|
   SHELL
 
   # Message
-  config.vm.post_up_message = "Umbrel development environment ready: http://#{config.vm.hostname}.local"
+  config.vm.post_up_message = "#{umbrelLogo}\nUmbrel development environment ready: http://#{config.vm.hostname}.local"
 end
