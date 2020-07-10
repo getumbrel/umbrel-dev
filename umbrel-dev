@@ -58,7 +58,6 @@ destroy() {
 
 # Run a command inside the development VM
 run() {
-  command=$1
   vagrant ssh -c "cd /vagrant/getumbrel/umbrel && $1"
 }
 
