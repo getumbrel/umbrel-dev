@@ -62,6 +62,11 @@ run() {
   vagrant ssh -c "cd /vagrant/getumbrel/umbrel && $1"
 }
 
+# Get an SSH session inside the development VM
+ssh() {
+  run "bash"
+}
+
 # Show help text if no args set or help is called
 if [[ -z ${1+x} ]] || [[ "$1" = "help" ]]; then
   show_help
@@ -102,5 +107,12 @@ fi
 if [[ "$1" = "run" ]]; then
   shift
   run "$1"
+  exit
+fi
+
+# SSH
+if [[ "$1" = "ssh" ]]; then
+  shift
+  ssh
   exit
 fi
