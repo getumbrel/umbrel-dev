@@ -29,7 +29,7 @@ init() {
 
 # Boot the development VM
 boot() {
-  vagrant up
+  vagrant up $@
 }
 
 # Show help text if no args set or help is called
@@ -46,6 +46,7 @@ fi
 
 # Boot
 if [[ "$1" = "boot" ]]; then
-  boot
+  shift
+  boot $@
   exit
 fi
