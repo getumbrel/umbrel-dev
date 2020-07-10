@@ -42,6 +42,11 @@ Vagrant.configure(2) do |config|
     apt-get update
   SHELL
 
+  # Install Avahi
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get install -y avahi-daemon avahi-discover libnss-mdns
+  SHELL
+
   # Install Umbrel
   config.vm.provision "shell", inline: <<-SHELL
     apt-get install -y git
@@ -49,11 +54,6 @@ Vagrant.configure(2) do |config|
     REGTEST=1 ./configure-box.sh
     sudo chown -R 1000:1000 lnd/ bitcoin/
     sed -i 's/umbrel.local/#{config.vm.hostname}.local/g' docker-compose.yml
-  SHELL
-
-  # Install Avahi
-  config.vm.provision "shell", inline: <<-SHELL
-    apt-get install -y avahi-daemon avahi-discover libnss-mdns
   SHELL
 
   # Message
