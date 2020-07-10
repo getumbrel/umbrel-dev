@@ -35,35 +35,9 @@ check_dependencies() {
   done
 }
 
-# Initialize an Umbrel development environment in the working directory
-init() {
-  mkdir getumbrel
-  git clone https://github.com/getumbrel/umbrel.git getumbrel/umbrel
-}
-
-# Boot the development VM
-boot() {
-  vagrant up
-}
-
-# Halt the development VM
-halt() {
-  vagrant halt
-}
-
-# Destroy the development VM
-destroy() {
-  vagrant destroy
-}
-
 # Run a command inside the development VM
 run() {
   vagrant ssh -c "cd /vagrant/getumbrel/umbrel && $1"
-}
-
-# Get an SSH session inside the development VM
-ssh() {
-  run "bash"
 }
 
 # Show help text if no args set or help is called
@@ -75,43 +49,39 @@ fi
 # Check deps before running any commands
 check_dependencies
 
-# Init
+# Initialize an Umbrel development environment in the working directory
 if [[ "$1" = "init" ]]; then
-  init
+  mkdir getumbrel
+  git clone https://github.com/getumbrel/umbrel.git getumbrel/umbrel
   exit
 fi
 
-# Boot
+# Boot the development VM
 if [[ "$1" = "boot" ]]; then
-  shift
-  boot
+  vagrant up
   exit
 fi
 
-# Halt
+# Halt the development VM
 if [[ "$1" = "halt" ]]; then
-  shift
-  halt
+  vagrant halt
   exit
 fi
 
-# Destroy
+# Destroy the development VM
 if [[ "$1" = "destroy" ]]; then
-  shift
-  destroy
+  vagrant destroy
   exit
 fi
 
-# Run
+# Run a command inside the development VM
 if [[ "$1" = "run" ]]; then
-  shift
-  run "$1"
+  run "$2"
   exit
 fi
 
-# SSH
+# Get an SSH session inside the development VM
 if [[ "$1" = "ssh" ]]; then
-  shift
-  ssh
+  run bash
   exit
 fi
