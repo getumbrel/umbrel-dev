@@ -70,13 +70,14 @@ if [[ "$command" = "init" ]]; then
     docker_repo="$(echo $repo | cut -d' ' -f2)"
     echo
     git clone "https://github.com/$github_repo.git" "$github_repo"
-    echo
     if [[ "$github_repo" != "getumbrel/umbrel" ]]; then
+      echo
       echo "Patching docker-compose.yml to build $github_repo container from source..."
       gsed -i "s#image: $docker_repo\:.*#build: \.\.\/\.\.\/$github_repo#g" getumbrel/umbrel/docker-compose.yml
     fi
   done
 
+  echo
   echo "Your development environment is now setup"
   echo "You can boot your development VM with:"
   echo
