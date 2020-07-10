@@ -21,8 +21,20 @@ Commands:
 EOF
 }
 
+# Initialize an Umbrel development environment in the working directory
+init() {
+  mkdir getumbrel
+  git clone https://github.com/getumbrel/umbrel.git getumbrel/umbrel
+}
+
 # Show help text if no args set or help is called
 if [[ -z ${1+x} ]] || [[ "$1" = "help" ]]; then
   show_help
   exit 1
+fi
+
+# Init
+if [[ "$1" = "init" ]]; then
+  init
+  exit
 fi
