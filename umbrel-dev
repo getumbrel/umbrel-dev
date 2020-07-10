@@ -83,10 +83,12 @@ fi
 # Initialize an Umbrel development environment in the working directory
 if [[ "$command" = "init" ]]; then
   # List of tuples
-  # docker_image github_repo
+  # github_repo docker_image
   repos=(
     "getumbrel/umbrel getumbrel/umbrel"
     "getumbrel/umbrel-dashboard getumbrel/dashboard"
+    "getumbrel/umbrel-manager getumbrel/manager"
+    "getumbrel/umbrel-middleware getumbrel/middleware"
   )
 
   if [[ "$(ls -A)" ]]; then
