@@ -15,7 +15,7 @@ Commands:
     boot                    Boot the development VM
     halt                    Halt the development VM
     destroy                 Destroy the development VM
-    rebuild [<container>]   Rebuild all or a specific container
+    rebuild <container>     Rebuild a container
     logs                    Stream Umbrel logs
     run <command>           Run a command inside the development VM
     ssh                     Get an SSH session inside the development VM
@@ -103,7 +103,16 @@ fi
 
 # TODO: Rebuild all or a specific container
 if [[ "$command" = "rebuild" ]]; then
-  echo "Not yet implemented."
+  if [ -z ${2+x} ]; then
+    echo "A second argument is required!"
+    exit 1
+  fi
+  container="$2"
+  run "                                 \
+       docker-compose build $container  \
+    && docker-compose stop $container   \
+    && docker-compose rm -f $container  \
+    && docker-compose up -d $container"
   exit
 fi
 
