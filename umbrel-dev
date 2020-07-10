@@ -25,13 +25,14 @@ EOF
 # Check required dependencies are installed
 # If not, fail with instructions on how to fix
 check_dependencies() {
-  for cmd in "git" "vagrant" "vboxmanage"; do
+  # TODO: Only warn about gnu-sed on macos and properly handle both sed/gsed in $PATH
+  for cmd in "gsed" "git" "vagrant" "vboxmanage"; do
     if ! command -v $cmd >/dev/null 2>&1; then
-      echo "This script requires Git, VirtualBox and Vagrant to be installed."
+      echo "This script requires gnu-sed Git, VirtualBox and Vagrant to be installed."
       echo
       echo "You can install them with brew:"
       echo
-      echo "  brew install git"
+      echo "  brew install gnu-sed git"
       echo "  brew cask install vagrant virtualbox"
       exit 1
     fi
@@ -54,8 +55,31 @@ fi
 
 # Initialize an Umbrel development environment in the working directory
 if [[ "$command" = "init" ]]; then
-  mkdir getumbrel
-  git clone https://github.com/getumbrel/umbrel.git getumbrel/umbrel
+  # List of tuples
+  # docker_image github_repo
+  repos=(
+    "getumbrel/umbrel getumbrel/umbrel"
+    "getumbrel/umbrel-dashboard getumbrel/dashboard"
+  )
+
+  echo "Cloning container repositories..."
+  for ((i = 0; i < ${#repos[@]}; i++)); do
+    repo="${repos[$i]}"
+    github_repo="$(echo $repo | cut -d' ' -f1)"
+    docker_repo="$(echo $repo | cut -d' ' -f2)"
+    echo
+    git clone "https://github.com/$github_repo.git" "$github_repo"
+    echo
+    if [[ "$github_repo" != "getumbrel/umbrel" ]]; then
+      echo "Patching docker-compose.yml to build $github_repo container from source..."
+      gsed -i "s#image: $docker_repo\:.*#build: \.\.\/\.\.\/$github_repo#g" getumbrel/umbrel/docker-compose.yml
+    fi
+  done
+
+  echo "Your development environment is now setup"
+  echo "You can boot your development VM with:"
+  echo
+  echo "  umbrel-dev boot"
   exit
 fi
 
