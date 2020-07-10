@@ -74,6 +74,12 @@ if [[ "$command" = "destroy" ]]; then
   exit
 fi
 
+# TODO: Rebuild all or a specific container
+if [[ "$command" = "rebuild" ]]; then
+  echo "Not yet implemented."
+  exit
+fi
+
 # Run a command inside the development VM
 if [[ "$command" = "run" ]]; then
   run "$2"
