@@ -45,6 +45,20 @@ run_in_vm() {
   vagrant ssh -c "cd /vagrant/getumbrel/umbrel && $1"
 }
 
+# Get script location and correctly handle any symlinks
+get_script_location() {
+  source="${BASH_SOURCE[0]}"
+  # Resolve $source until the file is no longer a symlink
+  while [ -h "$source" ]; do
+    dir="$(cd -P "$(dirname "$source")" >/dev/null 2>&1 && pwd)"
+    source="$(readlink "$source")"
+    # If $source was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+    [[ $source != /* ]] && source="$dir/$source"
+  done
+  dir="$(cd -P "$(dirname "$source")" >/dev/null 2>&1 && pwd)"
+  echo $dir
+}
+
 # Check deps before running any commands
 check_dependencies
 
@@ -62,6 +76,9 @@ if [[ "$command" = "init" ]]; then
     "getumbrel/umbrel getumbrel/umbrel"
     "getumbrel/umbrel-dashboard getumbrel/dashboard"
   )
+
+  echo "Creating Vagrantfile..."
+  cp "$(get_script_location)/Vagrantfile" .
 
   echo "Cloning container repositories..."
   for ((i = 0; i < ${#repos[@]}; i++)); do
