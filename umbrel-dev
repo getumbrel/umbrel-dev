@@ -41,7 +41,7 @@ check_dependencies() {
 }
 
 # Run a command inside the development VM
-run() {
+run_in_vm() {
   vagrant ssh -c "cd /vagrant/getumbrel/umbrel && $1"
 }
 
@@ -104,7 +104,7 @@ fi
 
 # List container services
 if [[ "$command" = "containers" ]]; then
-  run "docker-compose config --services"
+  run_in_vm "docker-compose config --services"
   exit
 fi
 
@@ -115,7 +115,7 @@ if [[ "$command" = "rebuild" ]]; then
     exit 1
   fi
   container="$2"
-  run "                                 \
+  run_in_vm "                           \
        docker-compose build $container  \
     && docker-compose stop $container   \
     && docker-compose rm -f $container  \
@@ -125,7 +125,7 @@ fi
 
 # Stream Umbrel logs
 if [[ "$command" = "logs" ]]; then
-  run "docker-compose logs -f"
+  run_in_vm "docker-compose logs -f"
   exit
 fi
 
@@ -135,13 +135,13 @@ if [[ "$command" = "run" ]]; then
     echo "A second argument is required!"
     exit 1
   fi
-  run "$2"
+  run_in_vm "$2"
   exit
 fi
 
 # Get an SSH session inside the development VM
 if [[ "$command" = "ssh" ]]; then
-  run bash
+  run_in_vm bash
   exit
 fi
 
