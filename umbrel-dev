@@ -29,7 +29,7 @@ check_dependencies() {
   # TODO: Only warn about gnu-sed on macos and properly handle both sed/gsed in $PATH
   for cmd in "gsed" "git" "vagrant" "vboxmanage"; do
     if ! command -v $cmd >/dev/null 2>&1; then
-      echo "This script requires gnu-sed Git, VirtualBox and Vagrant to be installed."
+      echo "This script requires gnu-sed, Git, VirtualBox and Vagrant to be installed."
       echo
       echo "You can install them with brew:"
       echo
