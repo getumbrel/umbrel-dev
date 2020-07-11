@@ -2,6 +2,26 @@
 
 Automatically initialize and manage an Umbrel development environment.
 
+## Install
+
+### Homebrew
+
+```
+brew install lukechilds/tap/umbrel-dev
+```
+
+### Git
+
+```
+git clone https://github.com/lukechilds/umbrel-dev.git ~/.umbrel-dev
+```
+
+Then add to your shell profile:
+
+```shell
+export PATH="$PATH:$HOME/.umbrel-dev/bin"
+```
+
 ## Usage
 
 ```
