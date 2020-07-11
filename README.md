@@ -6,7 +6,7 @@ Automatically initialize and manage an Umbrel development environment.
 
 ```
 $ umbrel-dev
-umbrel-dev 0.0.0
+umbrel-dev 0.1.0
 
 Automatically initialize and manage an Umbrel development environment.
 
