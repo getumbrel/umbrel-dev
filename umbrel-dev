@@ -23,6 +23,18 @@ Commands:
 EOF
 }
 
+# Get gnu sed
+gnused=sed
+if [[ "$(uname)" == "Darwin" ]]; then
+  if ! command -v gsed >/dev/null 2>&1; then
+    echo "Error: This script requires gnu-sed!"
+    echo "Install it with:"
+    echo "  brew install gnu-sed"
+    exit 1
+  fi
+  gnused=gsed
+fi
+
 # Check required dependencies are installed
 # If not, fail with instructions on how to fix
 check_dependencies() {
@@ -114,7 +126,7 @@ if [[ "$command" = "init" ]]; then
     if [[ "$github_repo" != "getumbrel/umbrel" ]]; then
       echo
       echo "Patching docker-compose.yml to build $github_repo container from source..."
-      gsed -i "s#image: $docker_repo\:.*#build: \.\.\/\.\.\/$github_repo#g" getumbrel/umbrel/docker-compose.yml
+      $gnused -i "s#image: $docker_repo\:.*#build: \.\.\/\.\.\/$github_repo#g" getumbrel/umbrel/docker-compose.yml
     fi
   done
 
