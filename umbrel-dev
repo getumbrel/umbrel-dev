@@ -38,15 +38,20 @@ fi
 # Check required dependencies are installed
 # If not, fail with instructions on how to fix
 check_dependencies() {
-  # TODO: Only warn about gnu-sed on macos and properly handle both sed/gsed in $PATH
   for cmd in "gsed" "git" "vagrant" "vboxmanage"; do
     if ! command -v $cmd >/dev/null 2>&1; then
-      echo "This script requires gnu-sed, Git, VirtualBox and Vagrant to be installed."
+      echo "This script requires Git, VirtualBox and Vagrant to be installed."
       echo
-      echo "You can install them with brew:"
+      echo "If you use Homebrew you can install them with:"
       echo
-      echo "  brew install gnu-sed git"
+      echo "  brew install git"
       echo "  brew cask install vagrant virtualbox"
+      echo
+      echo "Otherwise see:"
+      echo
+      echo "  https://git-scm.com/downloads"
+      echo "  https://virtualbox.org/wiki/Downloads"
+      echo "  https://www.vagrantup.com/downloads.html"
       exit 1
     fi
   done
