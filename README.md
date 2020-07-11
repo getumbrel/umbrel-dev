@@ -1,3 +1,26 @@
+```
+              ,;###GGGGGGGGGGl#Sp
+           ,##GGGlW""^'  '`""%GGGG#S,
+         ,#GGG"                  "lGG#o
+        #GGl^                      '$GG#
+      ,#GGb                          \GGG,
+      lGG"                            "GGG
+     #GGGlGGGl##p,,p##lGGl##p,,p###ll##GGGG
+    !GGGlW"""*GGGGGGG#""""WlGGGGG#W""*WGGGGS
+     ""          "^          '"          ""
+
+
+                @GGS         lG#
+                !GGG        !GGG
+                !GGG        !GGG
+                !GGG        !GGG
+                !GGG        !GGG
+                !GGG        !GGG
+                'GGG        $GGl
+                 "GGG#psqp##GG#
+                   "%GGGGGG#"
+```
+
 # ☂️ umbrel-dev
 
 Automatically initialize and manage an Umbrel development environment.
