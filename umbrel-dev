@@ -38,7 +38,7 @@ fi
 # Check required dependencies are installed
 # If not, fail with instructions on how to fix
 check_dependencies() {
-  for cmd in "gsed" "git" "vagrant" "vboxmanage"; do
+  for cmd in "git" "vagrant" "vboxmanage"; do
     if ! command -v $cmd >/dev/null 2>&1; then
       echo "This script requires Git, VirtualBox and Vagrant to be installed."
       echo
