@@ -53,12 +53,11 @@ Vagrant.configure(2) do |config|
 
   # Install Umbrel
   config.vm.provision "shell", inline: <<-SHELL
-    apt-get install -y git
+    apt-get install -y fswatch rsync jq
     cd /vagrant/getumbrel/umbrel
-    REGTEST=1 ./configure-box.sh
-    sudo chown -R 1000:1000 lnd/ bitcoin/
-    sed -i 's/umbrel.local/#{config.vm.hostname}.local/g' docker-compose.yml
-    docker-compose up -d
+    sudo chown -R 1000:1000 .
+    sed -i 's/DEVICE_HOST:.*/DEVICE_HOST: http:\/\/#{config.vm.hostname}.local/g' docker-compose.yml
+    sudo NETWORK=regtest ./scripts/start
   SHELL
 
   # Message
