@@ -36,7 +36,7 @@ brew install lukechilds/tap/umbrel-dev
 ### Git
 
 ```
-git clone https://github.com/lukechilds/umbrel-dev.git ~/.umbrel-dev
+git clone https://github.com/getumbrel/umbrel-dev.git ~/.umbrel-dev
 ```
 
 Then add to your shell profile:
