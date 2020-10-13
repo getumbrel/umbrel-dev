@@ -185,7 +185,7 @@ if [[ "$command" = "rebuild" ]]; then
        docker-compose build $container  \
     && docker-compose stop $container   \
     && docker-compose rm -f $container  \
-    && docker-compose up -d $container"
+    && DEVICE_HOSTS=http://umbrel-dev.local docker-compose up -d $container"
   exit
 fi
 
