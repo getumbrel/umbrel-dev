@@ -56,8 +56,14 @@ Vagrant.configure(2) do |config|
     apt-get install -y fswatch rsync jq
     cd /vagrant/getumbrel/umbrel
     sudo chown -R 1000:1000 .
-    sed -i 's/DEVICE_HOST:.*/DEVICE_HOST: http:\/\/#{config.vm.hostname}.local/g' docker-compose.yml
-    sudo NETWORK=regtest ./scripts/start
+    sudo NETWORK=regtest ./scripts/configure
+  SHELL
+
+  # Start Umbrel on boot
+  config.vm.provision "shell", run: 'always', inline: <<-SHELL
+    cd /vagrant/getumbrel/umbrel
+    sudo chown -R 1000:1000 .
+    ./scripts/start
   SHELL
 
   # Message
