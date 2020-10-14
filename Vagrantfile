@@ -55,7 +55,6 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: <<-SHELL
     apt-get install -y fswatch rsync jq
     cd /vagrant/getumbrel/umbrel
-    sudo chown -R 1000:1000 .
     sudo NETWORK=regtest ./scripts/configure
   SHELL
 
