@@ -63,6 +63,7 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", run: 'always', inline: <<-SHELL
     cd /vagrant/getumbrel/umbrel
     sudo chown -R 1000:1000 .
+    chmod -R 700 tor/data/*
     ./scripts/start
   SHELL
 

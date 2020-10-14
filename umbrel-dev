@@ -115,23 +115,12 @@ if [[ "$command" = "init" ]]; then
   echo
   echo "Cloning container repositories..."
   # List of tuples
-  # github_repo docker_image
-  repos=(
-    "getumbrel/umbrel getumbrel/umbrel"
-    "getumbrel/umbrel-dashboard getumbrel/dashboard"
-    "getumbrel/umbrel-manager getumbrel/manager"
-    "getumbrel/umbrel-middleware getumbrel/middleware"
-  )
-  for ((i = 0; i < ${#repos[@]}; i++)); do
-    repo="${repos[$i]}"
-    github_repo="$(echo $repo | cut -d' ' -f1)"
-    docker_repo="$(echo $repo | cut -d' ' -f2)"
-    echo
-    git clone "https://github.com/$github_repo.git" "$github_repo"
-    if [[ "$github_repo" != "getumbrel/umbrel" ]]; then
-      echo
-      echo "Patching docker-compose.yml to build $github_repo container from source..."
-      $gnused -i "s#image: $docker_repo\:.*#build: \.\.\/\.\.\/$github_repo#g" getumbrel/umbrel/docker-compose.yml
+  # repo docker_image
+  repos="getumbrel/umbrel getumbrel/umbrel-dashboard getumbrel/umbrel-manager getumbrel/umbrel-middleware"
+  for repo in $repos; do
+    echo git clone "https://github.com/$repo.git" "$repo"
+    if [[ "$repo" != "getumbrel/umbrel" ]]; then
+      cp "$(get_script_location)/docker-compose.override.yml" "$repo/"
     fi
   done
 

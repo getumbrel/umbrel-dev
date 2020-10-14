@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+        dashboard:
+                build:
+                  context: ../umbrel-dashboard
+                  dockerfile: Dockerfile.dev
+                volumes:
+                  - ../umbrel-dashboard:/app
+        manager:
+                build: ../umbrel-manager
+        middleware:
+                build: ../umbrel-middleware
