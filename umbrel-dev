@@ -108,11 +108,6 @@ if [[ "$command" = "init" ]]; then
   cp "$(get_script_location)/Vagrantfile" .
 
   echo
-  vagrant plugin install vagrant-vbguest
-  echo
-  vagrant plugin install vagrant-docker-compose
-
-  echo
   echo "Cloning container repositories..."
   # List of tuples
   # repo docker_image
