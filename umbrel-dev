@@ -109,8 +109,6 @@ if [[ "$command" = "init" ]]; then
 
   echo
   echo "Cloning container repositories..."
-  # List of tuples
-  # repo docker_image
   repos="getumbrel/umbrel getumbrel/umbrel-dashboard getumbrel/umbrel-manager getumbrel/umbrel-middleware"
   for repo in $repos; do
     echo
