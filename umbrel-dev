@@ -118,7 +118,7 @@ if [[ "$command" = "init" ]]; then
   # repo docker_image
   repos="getumbrel/umbrel getumbrel/umbrel-dashboard getumbrel/umbrel-manager getumbrel/umbrel-middleware"
   for repo in $repos; do
-    echo git clone "https://github.com/$repo.git" "$repo"
+    git clone "https://github.com/$repo.git" "$repo"
     if [[ "$repo" != "getumbrel/umbrel" ]]; then
       cp "$(get_script_location)/docker-compose.override.yml" "$repo/"
     fi
