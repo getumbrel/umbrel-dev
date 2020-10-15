@@ -179,7 +179,12 @@ fi
 # Stream Umbrel logs
 if [[ "$command" = "logs" ]]; then
   check_umbrel_dev_environment
-  run_in_vm "docker-compose logs -f"
+  while true; do
+    run_in_vm "docker-compose logs -f" || {
+      echo "$(date +"%T") Trying again in 1 second..."
+    }
+    sleep 1
+  done
   exit
 fi
 
