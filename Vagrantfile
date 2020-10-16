@@ -62,6 +62,7 @@ Vagrant.configure(2) do |config|
     apt-get install -y fswatch rsync jq
     cd /vagrant/getumbrel/umbrel
     sudo NETWORK=regtest ./scripts/configure
+    docker-compose build --parallel
   SHELL
 
   # Start Umbrel on boot
