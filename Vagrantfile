@@ -63,6 +63,7 @@ Vagrant.configure(2) do |config|
     cd /vagrant/getumbrel/umbrel
     sudo NETWORK=regtest ./scripts/configure
     docker-compose build --parallel
+    docker-compose run dashboard -c yarn
   SHELL
 
   # Start Umbrel on boot
