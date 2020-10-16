@@ -23,7 +23,10 @@ TEXT
 
 Vagrant.configure(2) do |config|
   # Install required plugins
-  config.vagrant.plugins = ["vagrant-vbguest", "vagrant-docker-compose"]
+  config.vagrant.plugins = {
+    "vagrant-vbguest" => {"version" => "0.24.0"},
+    "vagrant-docker-compose" => {"version" => "1.5.1"},
+  }
 
   # Setup VM
   config.vm.box = "debian/buster64"

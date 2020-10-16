@@ -108,6 +108,11 @@ if [[ "$command" = "init" ]]; then
   cp "$(get_script_location)/Vagrantfile" .
 
   echo
+  vagrant plugin install vagrant-vbguest --plugin-version=0.24.0
+  echo
+  vagrant plugin install vagrant-docker-compose --plugin-version=1.5.1
+
+  echo
   echo "Cloning container repositories..."
   repos="getumbrel/umbrel getumbrel/umbrel-dashboard getumbrel/umbrel-manager getumbrel/umbrel-middleware"
   for repo in $repos; do
