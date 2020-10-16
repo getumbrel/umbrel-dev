@@ -13,7 +13,7 @@ Commands:
     help                    Show this help message
     init                    Initialize an Umbrel development environment in the working directory
     boot                    Boot the development VM
-    halt                    Halt the development VM
+    shutdown                Shutdown the development VM
     destroy                 Destroy the development VM
     containers              List container services
     rebuild <container>     Rebuild a container service
@@ -140,8 +140,8 @@ if [[ "$command" = "boot" ]]; then
   exit
 fi
 
-# Halt the development VM
-if [[ "$command" = "halt" ]]; then
+# Shutdown the development VM
+if [[ "$command" = "shutdown" ]]; then
   check_umbrel_dev_environment
   vagrant halt
   exit
