@@ -150,6 +150,8 @@ fi
 # Destroy the development VM
 if [[ "$command" = "destroy" ]]; then
   check_umbrel_dev_environment
+  echo "Warning: This will completely remove the VM meaning it needs to be recreated on next boot."
+  echo "If you just want to stop the VM run: umbrel-dev shutdown"
   vagrant destroy
   exit
 fi
