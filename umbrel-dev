@@ -109,8 +109,6 @@ if [[ "$command" = "init" ]]; then
 
   echo
   vagrant plugin install --local vagrant-vbguest --plugin-version=0.24.0
-  echo
-  vagrant plugin install --local vagrant-docker-compose --plugin-version=1.5.1
 
   echo
   echo "Cloning container repositories..."

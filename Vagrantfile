@@ -23,10 +23,7 @@ TEXT
 
 Vagrant.configure(2) do |config|
   # Install required plugins
-  config.vagrant.plugins = {
-    "vagrant-vbguest" => {"version" => "0.24.0"},
-    "vagrant-docker-compose" => {"version" => "1.5.1"},
-  }
+  config.vagrant.plugins = {"vagrant-vbguest" => {"version" => "0.24.0"}}
 
   # Setup VM
   config.vm.define "umbrel-dev"
@@ -41,13 +38,18 @@ Vagrant.configure(2) do |config|
     vb.customize ["modifyvm", :id, "--memory", "4096"]
   end
 
-  # Provision Docker
-  config.vm.provision :docker
-  config.vm.provision :docker_compose
-
   # Update package lists
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
+  SHELL
+
+  # Install Docker
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo apt-get install -y curl
+    curl -fsSL https://get.docker.com | sudo sh
+    sudo usermod -aG docker vagrant
+    sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
   SHELL
 
   # Install Avahi
