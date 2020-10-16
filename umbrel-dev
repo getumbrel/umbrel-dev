@@ -108,9 +108,9 @@ if [[ "$command" = "init" ]]; then
   cp "$(get_script_location)/Vagrantfile" .
 
   echo
-  vagrant plugin install vagrant-vbguest --plugin-version=0.24.0
+  vagrant plugin install --local vagrant-vbguest --plugin-version=0.24.0
   echo
-  vagrant plugin install vagrant-docker-compose --plugin-version=1.5.1
+  vagrant plugin install --local vagrant-docker-compose --plugin-version=1.5.1
 
   echo
   echo "Cloning container repositories..."
