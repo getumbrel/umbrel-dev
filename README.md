@@ -70,4 +70,4 @@ Commands:
 
 ## License
 
-MIT © Luke Childs
+MIT © Umbrel
