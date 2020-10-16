@@ -49,7 +49,7 @@ export PATH="$PATH:$HOME/.umbrel-dev/bin"
 
 ```
 $ umbrel-dev
-umbrel-dev 0.1.0
+umbrel-dev 1.0.0
 
 Automatically initialize and manage an Umbrel development environment.
 
@@ -59,7 +59,7 @@ Commands:
     help                    Show this help message
     init                    Initialize an Umbrel development environment in the working directory
     boot                    Boot the development VM
-    halt                    Halt the development VM
+    shutdown                Shutdown the development VM
     destroy                 Destroy the development VM
     containers              List container services
     rebuild <container>     Rebuild a container service
