@@ -32,10 +32,10 @@ Vagrant.configure(2) do |config|
   config.vm.network "public_network", bridge: "en0: Wi-Fi (AirPort)"
   config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
 
-  # Configure similar specs to a Raspberry Pi
+  # Configure VM resources
   config.vm.provider "virtualbox" do |vb|
-    vb.customize ["modifyvm", :id, "--cpus", "4"]
-    vb.customize ["modifyvm", :id, "--memory", "4096"]
+    vb.customize ["modifyvm", :id, "--cpus", "2"]
+    vb.customize ["modifyvm", :id, "--memory", "2048"]
   end
 
   # Update package lists
