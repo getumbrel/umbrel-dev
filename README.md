@@ -49,7 +49,7 @@ export PATH="$PATH:$HOME/.umbrel-dev/bin"
 
 ```
 $ umbrel-dev
-umbrel-dev 1.0.0
+umbrel-dev 1.0.1
 
 Automatically initialize and manage an Umbrel development environment.
 
