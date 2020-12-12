@@ -18,6 +18,7 @@ Commands:
     containers              List container services
     rebuild <container>     Rebuild a container service
     reload                  Reloads the Umbrel service
+    app <command> [options] Manages apps installations
     logs                    Stream Umbrel logs
     run <command>           Run a command inside the development VM
     ssh                     Get an SSH session inside the development VM
@@ -189,6 +190,18 @@ if [[ "$command" = "reload" ]]; then
        sudo scripts/stop       \
     && sudo scripts/configure  \
     && sudo scripts/start"
+  exit
+fi
+
+# Rebuild a container service
+if [[ "$command" = "app" ]]; then
+  check_umbrel_dev_environment
+  if [ -z ${2+x} ]; then
+    args=""
+  else
+    args="${@:2}"
+  fi
+  run_in_vm "scripts/app ${args}"
   exit
 fi
 
