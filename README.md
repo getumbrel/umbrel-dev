@@ -49,7 +49,7 @@ export PATH="$PATH:$HOME/.umbrel-dev/bin"
 
 ```
 $ umbrel-dev
-umbrel-dev 1.1.0
+umbrel-dev 1.2.0
 
 Automatically initialize and manage an Umbrel development environment.
 
@@ -64,6 +64,7 @@ Commands:
     containers              List container services
     rebuild <container>     Rebuild a container service
     reload                  Reloads the Umbrel service
+    app <command> [options] Manages apps installations
     logs                    Stream Umbrel logs
     run <command>           Run a command inside the development VM
     ssh                     Get an SSH session inside the development VM
