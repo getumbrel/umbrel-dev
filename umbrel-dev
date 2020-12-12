@@ -17,6 +17,7 @@ Commands:
     destroy                 Destroy the development VM
     containers              List container services
     rebuild <container>     Rebuild a container service
+    reload                  Reloads the Umbrel service
     logs                    Stream Umbrel logs
     run <command>           Run a command inside the development VM
     ssh                     Get an SSH session inside the development VM
@@ -176,6 +177,18 @@ if [[ "$command" = "rebuild" ]]; then
     && docker-compose stop $container   \
     && docker-compose rm -f $container  \
     && DEVICE_HOSTS=http://umbrel-dev.local docker-compose up -d $container"
+  exit
+fi
+
+# Rebuild a container service
+if [[ "$command" = "reload" ]]; then
+  check_umbrel_dev_environment
+  echo "Reloading the Umbrel service..."
+  echo
+  run_in_vm "                  \
+       sudo scripts/stop       \
+    && sudo scripts/configure  \
+    && sudo scripts/start"
   exit
 fi
 
