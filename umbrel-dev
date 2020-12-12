@@ -136,7 +136,7 @@ fi
 # Boot the development VM
 if [[ "$command" = "boot" ]]; then
   check_umbrel_dev_environment
-  vagrant up || vagrant destroy -f
+  vagrant up
   exit
 fi
 
