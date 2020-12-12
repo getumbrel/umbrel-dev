@@ -3,7 +3,7 @@ set -euo pipefail
 
 show_help() {
   cat << EOF
-umbrel-dev 1.0.1
+umbrel-dev 1.0.2
 
 Automatically initialize and manage an Umbrel development environment.
 
