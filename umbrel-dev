@@ -47,7 +47,7 @@ check_dependencies() {
       echo "If you use Homebrew you can install them with:"
       echo
       echo "  brew install git"
-      echo "  brew cask install virtualbox vagrant"
+      echo "  brew install --cask virtualbox vagrant"
       echo
       echo "Otherwise see:"
       echo
