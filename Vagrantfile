@@ -45,11 +45,10 @@ Vagrant.configure(2) do |config|
 
   # Install Docker
   config.vm.provision "shell", inline: <<-SHELL
-    sudo apt-get install -y curl
+    sudo apt-get install -y curl python3-pip
     curl -fsSL https://get.docker.com | sudo sh
     sudo usermod -aG docker vagrant
-    sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose
+    pip3 install docker-compose
   SHELL
 
   # Install Avahi
