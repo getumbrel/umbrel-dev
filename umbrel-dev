@@ -138,6 +138,13 @@ fi
 # Boot the development VM
 if [[ "$command" = "boot" ]]; then
   check_umbrel_dev_environment
+
+  # Update some packages on boot to prevent issues with vagrant-vbguest.
+  # https://github.com/dotless-de/vagrant-vbguest/issues/351#issuecomment-545391139
+  vagrant up --no-provision || true # This will sometimes fail
+  vagrant ssh -c "sudo apt-get update -y && sudo apt-get install -y build-essential linux-headers-amd64 linux-image-amd64 python-pip"
+  vagrant halt
+
   vagrant up
   exit
 fi
