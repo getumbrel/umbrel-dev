@@ -106,6 +106,34 @@ if [[ "$command" = "init" ]]; then
     exit 1
   fi
 
+  network="regtest"
+  shift 1
+
+  while (( "$#" )); do
+    case "$1" in
+      -n|--network)
+        if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
+          network=$2
+          shift 2
+        else
+          echo "Error: Argument for $1 is missing" >&2
+          exit 1
+        fi
+        ;;
+      -*|--*=) # unsupported flags
+        echo "Error: Unsupported flag $1" >&2
+        exit 1
+        ;;
+    esac
+  done
+
+  if [ "$network" != "mainnet" ] && [ "$network" != "testnet" ] && [ "$network" != "regtest" ]; then
+    echo "Error: Umbrel dev can only be configured for regtest (default), testnet or mainnet"
+    exit 1
+  fi
+
+  echo "Network is $network"
+  echo $network > "network"
   echo "Creating Vagrantfile..."
   cp "$(get_script_location)/Vagrantfile" .
 
@@ -179,12 +207,13 @@ if [[ "$command" = "rebuild" ]]; then
     echo "A second argument is required!"
     exit 1
   fi
+  network < "network"
   container="$2"
   run_in_vm "                           \
        docker-compose build $container  \
     && docker-compose stop $container   \
     && docker-compose rm -f $container  \
-    && DEVICE_HOSTS=http://umbrel-dev.local docker-compose up -d $container"
+    && DEVICE_HOSTS=http://$network-umbrel-dev.local docker-compose up -d $container"
   exit
 fi
 
