@@ -21,14 +21,16 @@ umbrelLogo = <<-TEXT
                    "%GGGGGG#"
 TEXT
 
+network = File.open("network").read.strip
+
 Vagrant.configure(2) do |config|
   # Install required plugins
   config.vagrant.plugins = {"vagrant-vbguest" => {"version" => "0.24.0"}}
 
   # Setup VM
-  config.vm.define "umbrel-dev"
+  config.vm.define "#{network}-umbrel-dev"
   config.vm.box = "debian/buster64"
-  config.vm.hostname = "umbrel-dev"
+  config.vm.hostname = "#{network}-umbrel-dev"
   config.vm.network "public_network", bridge: "en0: Wi-Fi (AirPort)"
   config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
 
@@ -60,7 +62,7 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: <<-SHELL
     apt-get install -y fswatch rsync jq
     cd /vagrant/getumbrel/umbrel
-    sudo NETWORK=regtest ./scripts/configure
+    sudo NETWORK=#{network} ./scripts/configure
     docker-compose build --parallel
     docker-compose run dashboard -c yarn
   SHELL
