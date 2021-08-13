@@ -22,20 +22,27 @@ umbrelLogo = <<-TEXT
 TEXT
 
 Vagrant.configure(2) do |config|
-  # Install required plugins
-  config.vagrant.plugins = {"vagrant-vbguest" => {"version" => "0.24.0"}}
 
   # Setup VM
   config.vm.define "umbrel-dev"
-  config.vm.box = "debian/buster64"
+  config.vm.box = "bento/debian-10"
   config.vm.hostname = "umbrel-dev"
   config.vm.network "public_network", bridge: "en0: Wi-Fi (AirPort)"
-  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+  config.vm.synced_folder ".", "/vagrant"
 
   # Configure VM resources
-  config.vm.provider "virtualbox" do |vb|
+  config.vm.provider "virtualbox" do |vb, override|
+    # Install required plugins
+    # config.vagrant.plugins = {"vagrant-vbguest" => {"version" => "0.24.0"}}
+    # config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+
     vb.customize ["modifyvm", :id, "--cpus", "2"]
     vb.customize ["modifyvm", :id, "--memory", "2048"]
+  end
+
+  config.vm.provider "parallels" do |prl|
+    prl.cpus = 2
+    prl.memory = 2048
   end
 
   # Update package lists
@@ -68,8 +75,8 @@ Vagrant.configure(2) do |config|
   # Start Umbrel on boot
   config.vm.provision "shell", run: 'always', inline: <<-SHELL
     cd /vagrant/getumbrel/umbrel
-    sudo chown -R 1000:1000 .
-    chmod -R 700 tor/data/*
+      sudo chown -R 1000:1000 .
+      chmod -R 700 tor/data/*
     ./scripts/start
   SHELL
 
