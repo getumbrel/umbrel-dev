@@ -45,7 +45,7 @@ Vagrant.configure(2) do |config|
 
   # Install Docker
   config.vm.provision "shell", inline: <<-SHELL
-    sudo apt-get install -y curl python3-pip
+    sudo apt-get install -y curl python3-pip libffi-dev
     curl -fsSL https://get.docker.com | sudo sh
     sudo usermod -aG docker vagrant
     pip3 install docker-compose
