@@ -22,20 +22,18 @@ umbrelLogo = <<-TEXT
 TEXT
 
 Vagrant.configure(2) do |config|
-  # Install required plugins
-  config.vagrant.plugins = {"vagrant-vbguest" => {"version" => "0.24.0"}}
 
   # Setup VM
   config.vm.define "umbrel-dev"
-  config.vm.box = "debian/buster64"
+  config.vm.box = "avi0xff/debian10-arm64"
   config.vm.hostname = "umbrel-dev"
   config.vm.network "public_network", bridge: "en0: Wi-Fi (AirPort)"
-  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+  config.vm.synced_folder ".", "/vagrant", type: "sshfs", sshfs_opts_append: "-o cache=no"
 
   # Configure VM resources
-  config.vm.provider "virtualbox" do |vb|
-    vb.customize ["modifyvm", :id, "--cpus", "2"]
-    vb.customize ["modifyvm", :id, "--memory", "2048"]
+  config.vm.provider "parallels" do |parallels|
+    parallels.cpus = 2
+    parallels.memory = 4096
   end
 
   # Update package lists
@@ -68,9 +66,9 @@ Vagrant.configure(2) do |config|
   # Start Umbrel on boot
   config.vm.provision "shell", run: 'always', inline: <<-SHELL
     cd /vagrant/getumbrel/umbrel
-    sudo chown -R 1000:1000 .
-    chmod -R 700 tor/data/*
-    ./scripts/start
+    # This is needed to avoid Tor permission issues on startup
+    sudo rm -rf ./tor/data/*
+    sudo ./scripts/start
   SHELL
 
   # Message

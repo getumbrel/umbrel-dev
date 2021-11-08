@@ -40,14 +40,14 @@ fi
 # Check required dependencies are installed
 # If not, fail with instructions on how to fix
 check_dependencies() {
-  for cmd in "git" "vagrant" "vboxmanage"; do
+  for cmd in "git" "vagrant" "prlctl"; do
     if ! command -v $cmd >/dev/null 2>&1; then
-      echo "This script requires Git, VirtualBox and Vagrant to be installed."
+      echo "This script requires Git, Vagrant and Parallels to be installed."
       echo
       echo "If you use Homebrew you can install them with:"
       echo
       echo "  brew install git"
-      echo "  brew install --cask virtualbox vagrant"
+      echo "  brew install --cask vagrant parallels"
       echo
       echo "Otherwise see:"
       echo
@@ -110,7 +110,8 @@ if [[ "$command" = "init" ]]; then
   cp "$(get_script_location)/Vagrantfile" .
 
   echo
-  vagrant plugin install --local vagrant-vbguest --plugin-version=0.24.0
+  vagrant plugin install --local vagrant-parallels
+  vagrant plugin install --local vagrant-sshfs
 
   echo
   echo "Cloning container repositories..."
@@ -138,13 +139,6 @@ fi
 # Boot the development VM
 if [[ "$command" = "boot" ]]; then
   check_umbrel_dev_environment
-
-  # Update some packages on boot to prevent issues with vagrant-vbguest.
-  # https://github.com/dotless-de/vagrant-vbguest/issues/351#issuecomment-545391139
-  vagrant up --no-provision || true # This will sometimes fail
-  vagrant ssh -c "sudo apt-get update -y && sudo apt-get install -y build-essential linux-headers-amd64 linux-image-amd64 python-pip"
-  vagrant halt
-
   vagrant up
   exit
 fi
