@@ -29,7 +29,7 @@ Vagrant.configure(2) do |config|
   config.vm.define "umbrel-dev"
   config.vm.box = "debian/buster64"
   config.vm.hostname = "umbrel-dev"
-  config.vm.network "public_network", bridge: "en0: Wi-Fi (AirPort)"
+  config.vm.network "public_network", bridge: "en0: Wi-Fi"
   config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
 
   # Configure VM resources
