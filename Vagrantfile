@@ -70,7 +70,7 @@ Vagrant.configure(2) do |config|
     cd /vagrant/getumbrel/umbrel
     sudo chown -R 1000:1000 .
     chmod -R 700 tor/data/*
-    ./scripts/start
+    NETWORK=regtest ./scripts/start
   SHELL
 
   # Message
