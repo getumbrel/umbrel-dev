@@ -30,7 +30,27 @@ Vagrant.configure(2) do |config|
   config.vm.box = "debian/buster64"
   config.vm.hostname = "umbrel-dev"
   config.vm.network "public_network", bridge: "en0: Wi-Fi (AirPort)"
-  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+  # Private network needed for NFS share
+  config.vm.network "private_network", ip: "192.168.56.56"
+
+  # Disable sync of default vagrant folder
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+
+  # Mount source into /code and use bindfs to re-map to /vagrant with correct ownership
+  # To resolve this error: uninitialized constant VagrantPlugins::HostDarwin::Cap::Version (NameError)
+  # sudo curl -o /opt/vagrant/embedded/gems/2.2.19/gems/vagrant-2.2.19/plugins/hosts/darwin/cap/path.rb https://raw.githubusercontent.com/hashicorp/vagrant/42db2569e32a69e604634462b633bb14ca20709a/plugins/hosts/darwin/cap/path.rb 
+  config.vm.synced_folder ".", "/code", type: "nfs"
+
+  # vagrant plugin install vagrant-bindfs
+  config.bindfs.force_empty_mountpoints = true
+  config.bindfs.default_options = {
+    force_user: 'vagrant',
+    force_group: 'vagrant',
+    # Everything is bound to vagrant:vagrant and Umbrel will chown from time to time
+    # Causing an operation not permitted error, this ignores that error
+    o: 'chown-ignore'
+  }
+  config.bindfs.bind_folder "/code", "/vagrant"
 
   # Configure VM resources
   config.vm.provider "virtualbox" do |vb|
