@@ -46,7 +46,7 @@ Vagrant.configure(2) do |config|
   config.bindfs.default_options = {
     force_user: 'vagrant',
     force_group: 'vagrant',
-    # Everything is bound to vagrant:vagrant and Umbrel will chown from time to time
+    # Everything is owned by vagrant:vagrant and Umbrel will chown from time to time
     # Causing an operation not permitted error, this ignores that error
     o: 'chown-ignore'
   }
