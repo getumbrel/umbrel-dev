@@ -111,6 +111,7 @@ if [[ "$command" = "init" ]]; then
 
   echo
   vagrant plugin install --local vagrant-vbguest --plugin-version=0.24.0
+  vagrant plugin install vagrant-gatling-rsync
 
   echo
   echo "Cloning container repositories..."
@@ -139,11 +140,15 @@ fi
 if [[ "$command" = "boot" ]]; then
   check_umbrel_dev_environment
 
+  export RUN_RSYNC="false"
+
   # Update some packages on boot to prevent issues with vagrant-vbguest.
   # https://github.com/dotless-de/vagrant-vbguest/issues/351#issuecomment-545391139
   vagrant up --no-provision || true # This will sometimes fail
   vagrant ssh -c "sudo apt-get update -y && sudo apt-get install -y build-essential linux-headers-amd64 linux-image-amd64 python-pip"
   vagrant halt
+
+  export RUN_RSYNC="true"
 
   vagrant up
   exit

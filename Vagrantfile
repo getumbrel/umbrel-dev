@@ -30,7 +30,14 @@ Vagrant.configure(2) do |config|
   config.vm.box = "debian/buster64"
   config.vm.hostname = "umbrel-dev"
   config.vm.network "public_network", bridge: "en0: Wi-Fi (AirPort)"
-  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+  config.vm.synced_folder ".", "/vagrant", type: "rsync"
+
+  # Rsync gatling settings
+  config.gatling.latency = 0.5
+  config.gatling.time_format = "%H:%M:%S"
+
+  # Automatically sync when box comes up
+  config.gatling.rsync_on_startup = ENV['RUN_RSYNC'] == "true"
 
   # Configure VM resources
   config.vm.provider "virtualbox" do |vb|
