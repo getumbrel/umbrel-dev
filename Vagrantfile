@@ -25,9 +25,12 @@ Vagrant.configure(2) do |config|
   # Install required plugins
   config.vagrant.plugins = {"vagrant-vbguest" => {"version" => "0.24.0"}}
 
+  CORES = 4
+  MEMORY = 4096
+
   # Setup VM
   config.vm.define "umbrel-dev"
-  config.vm.box = "debian/buster64"
+  config.vm.box = ENV["ARCH"].include?("x86") ? "debian/buster64" : "avi0xff/debian10-arm64"
   config.vm.hostname = "umbrel-dev"
   config.vm.network "public_network", bridge: [
     "en0: Wi-Fi",
@@ -57,10 +60,16 @@ Vagrant.configure(2) do |config|
   }
   config.bindfs.bind_folder "/code", "/vagrant"
 
-  # Configure VM resources
+  # VirtualBox config.
   config.vm.provider "virtualbox" do |vb|
-    vb.customize ["modifyvm", :id, "--cpus", "2"]
-    vb.customize ["modifyvm", :id, "--memory", "2048"]
+    vb.customize ["modifyvm", :id, "--cpus", CORES]
+    vb.customize ["modifyvm", :id, "--memory", MEMORY]
+  end
+
+  # Parallels config.
+  config.vm.provider "parallels" do |parallels|
+    parallels.cpus = CORES
+    parallels.memory = MEMORY
   end
 
   # Update package lists

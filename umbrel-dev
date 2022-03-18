@@ -37,17 +37,43 @@ if [[ "$(uname)" == "Darwin" ]]; then
   gnused=gsed
 fi
 
+determine_provider() {
+  local -r arch=$(uname -m)
+  if [[ "${OSTYPE}" == *"darwin"* ]]; then
+    if [[ "${arch}" == *"x86"* ]]; then
+      echo "virtualbox"
+    else
+      echo "parallels"
+    fi
+  else
+    echo "virtualbox"
+  fi
+}
+
 # Check required dependencies are installed
 # If not, fail with instructions on how to fix
 check_dependencies() {
-  for cmd in "git" "vagrant" "vboxmanage"; do
+  local deps
+
+  if [[ "${PROVIDER}" == "virtualbox" ]]; then
+    deps=("git" "vagrant" "vboxmanage")
+  elif [[ "${PROVIDER}" == "parallels" ]]; then
+    deps=("git" "vagrant" "prlctl")
+  fi
+
+  # To install virtualbox
+  # brew install --cask vagrant virtualbox
+
+  # To install parallels
+  # brew install --cask vagrant parallels
+
+  for cmd in "${deps[@]}"; do
     if ! command -v $cmd >/dev/null 2>&1; then
-      echo "This script requires Git, VirtualBox and Vagrant to be installed."
+      echo "  Command is missing: ${cmd}"
       echo
-      echo "If you use Homebrew you can install them with:"
+      echo "  To continue, please install the command: ${cmd}"
       echo
-      echo "  brew install git"
-      echo "  brew install --cask virtualbox vagrant"
+      echo "  e.g. brew install git"
       echo
       echo "Otherwise see:"
       echo
@@ -90,6 +116,8 @@ check_umbrel_dev_environment() {
   done
 }
 
+PROVIDER="${UMBREL_DEV_PROVIDER:-$(determine_provider)}"
+
 # Check deps before running any commands
 check_dependencies
 
@@ -110,7 +138,13 @@ if [[ "$command" = "init" ]]; then
   cp "$(get_script_location)/Vagrantfile" .
 
   echo
-  vagrant plugin install --local vagrant-vbguest --plugin-version=0.24.0
+
+  if [[ "${PROVIDER}" == "virtualbox" ]]; then
+    vagrant plugin install --local vagrant-vbguest --plugin-version=0.24.0
+  elif [[ "${PROVIDER}" == "parallels" ]]; then
+    vagrant plugin install --local vagrant-parallels
+  fi
+  
   vagrant plugin install vagrant-bindfs
 
   echo
@@ -140,13 +174,17 @@ fi
 if [[ "$command" = "boot" ]]; then
   check_umbrel_dev_environment
 
-  # Update some packages on boot to prevent issues with vagrant-vbguest.
-  # https://github.com/dotless-de/vagrant-vbguest/issues/351#issuecomment-545391139
-  vagrant up --no-provision || true # This will sometimes fail
-  vagrant ssh -c "sudo apt-get update -y && sudo apt-get install -y build-essential linux-headers-amd64 linux-image-amd64 python-pip"
-  vagrant halt
+  export ARCH="${UMBREL_DEV_ARCH:-$(uname -m)}"
 
-  vagrant up
+  if [[ "${PROVIDER}" == "virtualbox" ]]; then
+    # Update some packages on boot to prevent issues with vagrant-vbguest.
+    # https://github.com/dotless-de/vagrant-vbguest/issues/351#issuecomment-545391139
+    vagrant up --no-provision --provider "${PROVIDER}" || true # This will sometimes fail
+    vagrant ssh -c "sudo apt-get update -y && sudo apt-get install -y build-essential linux-headers-amd64 linux-image-amd64 python-pip"
+    vagrant halt
+  fi
+
+  vagrant up --provider "${PROVIDER}"
   exit
 fi
 
