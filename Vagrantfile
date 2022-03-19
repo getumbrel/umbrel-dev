@@ -32,12 +32,7 @@ Vagrant.configure(2) do |config|
   config.vm.define "umbrel-dev"
   config.vm.box = ENV["ARCH"].include?("x86") ? "debian/buster64" : "avi0xff/debian10-arm64"
   config.vm.hostname = "umbrel-dev"
-  config.vm.network "public_network", bridge: [
-    "en0: Wi-Fi",
-    "en1: Wi-Fi",
-    "en0: Wi-Fi 2",
-    "en1: Wi-Fi 2",
-  ]
+  config.vm.network "public_network", bridge: "en0: Wi-Fi"
   # Private network needed for NFS share
   config.vm.network "private_network", ip: "192.168.56.56"
 
