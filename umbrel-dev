@@ -194,8 +194,8 @@ fi
 if [[ "$command" = "shutdown" ]]; then
   check_umbrel_dev_environment
 
-  run_in_vm "sudo scripts/stop"
-  
+  run_in_vm "sudo scripts/stop || true"
+
   vagrant halt
   exit
 fi
