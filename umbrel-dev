@@ -133,9 +133,7 @@ if [[ "$command" = "init" ]]; then
 
   echo
 
-  if [[ "${PROVIDER}" == "virtualbox" ]]; then
-    vagrant plugin install --local vagrant-vbguest --plugin-version=0.24.0
-  elif [[ "${PROVIDER}" == "parallels" ]]; then
+  if [[ "${PROVIDER}" == "parallels" ]]; then
     vagrant plugin install --local vagrant-parallels
   fi
   
@@ -167,16 +165,6 @@ fi
 # Boot the development VM
 if [[ "$command" = "boot" ]]; then
   check_umbrel_dev_environment
-
-  if [[ "${PROVIDER}" == "virtualbox" ]] && [[ ! -f ".umbrel-virtualbox-setup" ]]; then
-    # Update some packages on boot to prevent issues with vagrant-vbguest.
-    # https://github.com/dotless-de/vagrant-vbguest/issues/351#issuecomment-545391139
-    vagrant up --no-provision --provider "${PROVIDER}" || true # This will sometimes fail
-    vagrant ssh -c "sudo apt-get update -y && sudo apt-get install -y build-essential linux-headers-amd64 linux-image-amd64 python-pip"
-    vagrant halt
-
-    touch .umbrel-virtualbox-setup
-  fi
 
   vagrant up --provider "${PROVIDER}"
   exit

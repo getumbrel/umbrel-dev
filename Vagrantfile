@@ -22,15 +22,13 @@ umbrelLogo = <<-TEXT
 TEXT
 
 Vagrant.configure(2) do |config|
-  # Install required plugins
-  config.vagrant.plugins = {"vagrant-vbguest" => {"version" => "0.24.0"}}
-
+  # Define VM compute resources
   CORES = ENV.key?("UMBREL_DEV_CORES") ? ENV["UMBREL_DEV_CORES"] : 4
   MEMORY = ENV.key?("UMBREL_DEV_MEMORY") ? ENV["UMBREL_DEV_MEMORY"] : 4096
 
   # Setup VM
   config.vm.define "umbrel-dev"
-  config.vm.box = ENV["ARCH"].include?("x86") ? "debian/buster64" : "avi0xff/debian10-arm64"
+  config.vm.box = ENV.key?("ARCH") and ENV["ARCH"].include?("arm") ? "avi0xff/debian10-arm64" : "debian/buster64"
   config.vm.hostname = "umbrel-dev"
   config.vm.network "public_network", bridge: "en0: Wi-Fi"
   # Private network needed for NFS share
@@ -44,6 +42,7 @@ Vagrant.configure(2) do |config|
   # sudo curl -o /opt/vagrant/embedded/gems/2.2.19/gems/vagrant-2.2.19/plugins/hosts/darwin/cap/path.rb https://raw.githubusercontent.com/hashicorp/vagrant/42db2569e32a69e604634462b633bb14ca20709a/plugins/hosts/darwin/cap/path.rb 
   config.vm.synced_folder ".", "/code", type: "nfs"
 
+  # Bindfs config.
   config.bindfs.force_empty_mountpoints = true
   config.bindfs.default_options = {
     force_user: 'vagrant',
