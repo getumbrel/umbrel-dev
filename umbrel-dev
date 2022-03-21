@@ -118,6 +118,8 @@ check_umbrel_dev_environment() {
 
 PROVIDER="${UMBREL_DEV_PROVIDER:-$(determine_provider)}"
 
+export ARCH="${UMBREL_DEV_ARCH:-$(uname -m)}"
+
 # Check deps before running any commands
 check_dependencies
 
@@ -173,8 +175,6 @@ fi
 # Boot the development VM
 if [[ "$command" = "boot" ]]; then
   check_umbrel_dev_environment
-
-  export ARCH="${UMBREL_DEV_ARCH:-$(uname -m)}"
 
   if [[ "${PROVIDER}" == "virtualbox" ]] && [[ ! -f ".umbrel-virtualbox-setup" ]]; then
     # Update some packages on boot to prevent issues with vagrant-vbguest.

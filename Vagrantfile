@@ -25,8 +25,8 @@ Vagrant.configure(2) do |config|
   # Install required plugins
   config.vagrant.plugins = {"vagrant-vbguest" => {"version" => "0.24.0"}}
 
-  CORES = 4
-  MEMORY = 4096
+  CORES = ENV.key?("UMBREL_DEV_CORES") ? ENV["UMBREL_DEV_CORES"] : 4
+  MEMORY = ENV.key?("UMBREL_DEV_MEMORY") ? ENV["UMBREL_DEV_MEMORY"] : 4096
 
   # Setup VM
   config.vm.define "umbrel-dev"
