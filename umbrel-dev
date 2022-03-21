@@ -38,13 +38,8 @@ if [[ "$(uname)" == "Darwin" ]]; then
 fi
 
 determine_provider() {
-  local -r arch=$(uname -m)
-  if [[ "${OSTYPE}" == *"darwin"* ]]; then
-    if [[ "${arch}" == *"x86"* ]]; then
-      echo "virtualbox"
-    else
-      echo "parallels"
-    fi
+  if [[ "$(uname -sm)" == "Darwin arm64" ]]; then
+    echo "parallels"
   else
     echo "virtualbox"
   fi
