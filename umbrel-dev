@@ -56,25 +56,22 @@ check_dependencies() {
     deps=("git" "vagrant" "prlctl")
   fi
 
-  # To install virtualbox
-  # brew install --cask vagrant virtualbox
-
-  # To install parallels
-  # brew install --cask vagrant parallels
-
   for cmd in "${deps[@]}"; do
     if ! command -v $cmd >/dev/null 2>&1; then
       echo "  Command is missing: ${cmd}"
       echo
-      echo "  To continue, please install the command: ${cmd}"
+      echo "  To continue, please install '${cmd}' using:"
       echo
-      echo "  e.g. brew install git"
+      if [[ "${cmd}" == "git" ]]; then
+        echo "  brew install git"
+      elif [[ "${cmd}" == "vagrant" ]]; then
+        echo "  brew install --cask vagrant"
+      elif [[ "${cmd}" == "vboxmanage" ]]; then
+        echo "  brew install --cask virtualbox"
+      elif [[ "${cmd}" == "prlctl" ]]; then
+        echo "  brew install --cask parallels"
+      fi
       echo
-      echo "Otherwise see:"
-      echo
-      echo "  https://git-scm.com/downloads"
-      echo "  https://virtualbox.org/wiki/Downloads"
-      echo "  https://www.vagrantup.com/downloads.html"
       exit 1
     fi
   done
