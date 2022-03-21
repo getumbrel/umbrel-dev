@@ -145,7 +145,7 @@ if [[ "$command" = "init" ]]; then
     vagrant plugin install --local vagrant-parallels
   fi
   
-  vagrant plugin install vagrant-bindfs
+  vagrant plugin install --local vagrant-bindfs
 
   echo
   echo "Cloning container repositories..."

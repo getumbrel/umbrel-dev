@@ -44,7 +44,6 @@ Vagrant.configure(2) do |config|
   # sudo curl -o /opt/vagrant/embedded/gems/2.2.19/gems/vagrant-2.2.19/plugins/hosts/darwin/cap/path.rb https://raw.githubusercontent.com/hashicorp/vagrant/42db2569e32a69e604634462b633bb14ca20709a/plugins/hosts/darwin/cap/path.rb 
   config.vm.synced_folder ".", "/code", type: "nfs"
 
-  # vagrant plugin install vagrant-bindfs
   config.bindfs.force_empty_mountpoints = true
   config.bindfs.default_options = {
     force_user: 'vagrant',
