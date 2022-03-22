@@ -32,8 +32,8 @@ Vagrant.configure(2) do |config|
   config.vm.hostname = "umbrel-dev"
   config.vm.network "public_network", bridge: "en0: Wi-Fi"
   # Private network needed for NFS share
-  # The 'Vagrant core NFS helper' uses the subnet 192.168.56.0/21 and requires we use a static IP in that range
-  # so we assign an IP in the middle of that range that is unlikely to be in use.
+  # The 'Vagrant core NFS helper' will use an IP in the 192.168.56.0/21 network.
+  # We assign an IP in the middle of that range that is unlikely to be in use
   config.vm.network "private_network", ip: "192.168.56.56"
 
   # Disable sync of default vagrant folder
