@@ -88,7 +88,7 @@ Vagrant.configure(2) do |config|
 
   # Install Umbrel
   config.vm.provision "shell", inline: <<-SHELL
-    apt-get install -y fswatch rsync jq
+    apt-get install -y fswatch rsync jq git
     cd /vagrant/getumbrel/umbrel
     sudo NETWORK=regtest ./scripts/configure
     docker-compose build --parallel
