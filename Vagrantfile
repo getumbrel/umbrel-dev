@@ -21,14 +21,30 @@ umbrelLogo = <<-TEXT
                    "%GGGGGG#"
 TEXT
 
+def box
+  arch = ENV.fetch("ARCH", "x86_64")
+  provider = ENV.fetch("PROVIDER", "virtualbox")
+
+  if arch.include?("arm")
+    if provider.include?("vmware")
+      "bytesguy/debian-10-arm64"
+    else
+      # parallels
+      "avi0xff/debian10-arm64"
+    end
+  else
+    "debian/buster64"
+  end
+end
+
 Vagrant.configure(2) do |config|
   # Define VM compute resources
-  CORES = ENV.key?("UMBREL_DEV_CORES") ? ENV["UMBREL_DEV_CORES"] : 2
-  MEMORY = ENV.key?("UMBREL_DEV_MEMORY") ? ENV["UMBREL_DEV_MEMORY"] : 2048
+  CORES = ENV.fetch("UMBREL_DEV_CORES", 2)
+  MEMORY = ENV.fetch("UMBREL_DEV_MEMORY", 2048)
 
   # Setup VM
   config.vm.define "umbrel-dev"
-  config.vm.box = (ENV.key?("ARCH") and ENV["ARCH"].include?("arm")) ? "avi0xff/debian10-arm64" : "debian/buster64"
+  config.vm.box = box()
   config.vm.hostname = "umbrel-dev"
   config.vm.network "public_network", bridge: "en0: Wi-Fi"
   # Private network needed for NFS share
@@ -66,6 +82,20 @@ Vagrant.configure(2) do |config|
   config.vm.provider "parallels" do |parallels|
     parallels.cpus = CORES
     parallels.memory = MEMORY
+  end
+
+  # VMware Fusion config.
+  config.vm.provider "vmware_fusion" do |vmware|
+    vmware.gui = false
+    vmware.cpus = CORES
+    vmware.memory = MEMORY
+  end
+
+  # VMware Desktop config.
+  config.vm.provider "vmware_desktop" do |vmware|
+    vmware.gui = false
+    vmware.cpus = CORES
+    vmware.memory = MEMORY
   end
 
   # Update package lists
