@@ -48,14 +48,12 @@ determine_provider() {
 # Check required dependencies are installed
 # If not, fail with instructions on how to fix
 check_dependencies() {
-  local deps=("git" "vagrant")
+  local deps
 
   if [[ "${PROVIDER}" == "virtualbox" ]]; then
-    deps+=("vboxmanage")
+    deps=("git" "vagrant" "vboxmanage")
   elif [[ "${PROVIDER}" == "parallels" ]]; then
-    deps+=("prlctl")
-  elif [[ "${PROVIDER}" == "vmware_desktop" ]] || [[ "${PROVIDER}" == "vmware_fusion" ]]; then
-    deps+=("vmrun")
+    deps=("git" "vagrant" "prlctl")
   fi
 
   for cmd in "${deps[@]}"; do
@@ -72,24 +70,11 @@ check_dependencies() {
         echo "  brew install --cask virtualbox"
       elif [[ "${cmd}" == "prlctl" ]]; then
         echo "  brew install --cask parallels"
-      elif [[ "${cmd}" == "vmrun" ]]; then
-        echo "  brew install --cask vmware-fusion"
       fi
       echo
       exit 1
     fi
   done
-
-  if [[ "${PROVIDER}" == "vmware_desktop" ]] || [[ "${PROVIDER}" == "vmware_fusion" ]]; then
-    if [[ ! -f "/opt/vagrant-vmware-desktop/certificates/vagrant-utility.client.crt" ]]; then
-      echo "  The Vagrant VMware utility is missing"
-      echo
-      echo "  To continue, please install it using:"
-      echo 
-      echo "  brew install --cask vagrant-vmware-utility"
-      exit 1
-    fi
-  fi
 }
 
 # Run a command inside the development VM
@@ -123,7 +108,8 @@ check_umbrel_dev_environment() {
   done
 }
 
-export PROVIDER="${UMBREL_DEV_PROVIDER:-$(determine_provider)}"
+PROVIDER="${UMBREL_DEV_PROVIDER:-$(determine_provider)}"
+
 export ARCH="${UMBREL_DEV_ARCH:-$(uname -m)}"
 
 # Check deps before running any commands
@@ -149,8 +135,6 @@ if [[ "$command" = "init" ]]; then
 
   if [[ "${PROVIDER}" == "parallels" ]]; then
     vagrant plugin install --local vagrant-parallels
-  elif [[ "${PROVIDER}" == "vmware_desktop" ]] || [[ "${PROVIDER}" == "vmware_fusion" ]]; then
-    vagrant plugin install --local vagrant-vmware-desktop
   fi
   
   vagrant plugin install --local vagrant-bindfs
