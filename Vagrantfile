@@ -23,8 +23,8 @@ TEXT
 
 Vagrant.configure(2) do |config|
   # Define VM compute resources
-  CORES = ENV.key?("UMBREL_DEV_CORES") ? ENV["UMBREL_DEV_CORES"] : 2
-  MEMORY = ENV.key?("UMBREL_DEV_MEMORY") ? ENV["UMBREL_DEV_MEMORY"] : 2048
+  CORES = ENV.fetch("UMBREL_DEV_CORES", 2)
+  MEMORY = ENV.fetch("UMBREL_DEV_MEMORY", 2048)
 
   # Setup VM
   config.vm.define "umbrel-dev"
