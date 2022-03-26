@@ -48,12 +48,12 @@ determine_provider() {
 # Check required dependencies are installed
 # If not, fail with instructions on how to fix
 check_dependencies() {
-  local deps
+  local deps=("git" "vagrant")
 
   if [[ "${PROVIDER}" == "virtualbox" ]]; then
-    deps=("git" "vagrant" "vboxmanage")
+    deps+=("vboxmanage")
   elif [[ "${PROVIDER}" == "parallels" ]]; then
-    deps=("git" "vagrant" "prlctl")
+    deps+=("prlctl")
   fi
 
   for cmd in "${deps[@]}"; do
@@ -75,6 +75,40 @@ check_dependencies() {
       exit 1
     fi
   done
+
+  # Due a bug within vagrant (2.2.19) with missing constants
+  # we need to patch this ourselves
+  local -r original_vagrant_path_file="/opt/vagrant/embedded/gems/2.2.19/gems/vagrant-2.2.19/plugins/hosts/darwin/cap/path.rb"
+  if [[ -f "${original_vagrant_path_file}" ]] && [[ "$(sha256sum ${original_vagrant_path_file} | awk '{ print $1 }')" == "a094a01c0268614dcecd85f2cf8b34072594ffe8a8bbdddb430981e30104a6d2" ]]; then
+    echo
+    echo "***************************************"
+    echo "* We've detected you're running a     *"
+    echo "* version of vagrant that has a bug.  *"
+    echo "* We will fix this for you, but this  *"
+    echo "* requires sudo. You will now be      *"
+    echo "* prompted for your password.         *"
+    echo "***************************************"
+    echo
+
+    # Now download working vagrant path file
+    local -r working_vagrant_path_file="https://raw.githubusercontent.com/hashicorp/vagrant/42db2569e32a69e604634462b633bb14ca20709a/plugins/hosts/darwin/cap/path.rb"
+    local -r temp_vagrant_path_file="${original_vagrant_path_file//path.rb/path_new.rb}"
+    sudo curl -o "${temp_vagrant_path_file}" "${working_vagrant_path_file}"
+
+    # Check patched vagrant path file matches expected checksum
+    if [[ "$(sha256sum ${temp_vagrant_path_file} | awk '{ print $1 }')" == "d982b3ebde081f3160374c9484880cb706435068133e1856042efcb44edf57f9" ]]; then
+      # Make a backup of the origianl file
+      local -r backup_vagrant_path_file="${original_vagrant_path_file//path.rb/path_backup.rb}"
+      sudo mv "${original_vagrant_path_file}" "${backup_vagrant_path_file}"
+      sudo mv "${temp_vagrant_path_file}" "${original_vagrant_path_file}"
+
+      echo
+      echo "**********************************"
+      echo "* Patch was successfully applied *"
+      echo "**********************************"
+      echo
+    fi
+  fi
 }
 
 # Run a command inside the development VM
