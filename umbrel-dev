@@ -81,13 +81,11 @@ check_dependencies() {
   local -r original_vagrant_path_file="/opt/vagrant/embedded/gems/2.2.19/gems/vagrant-2.2.19/plugins/hosts/darwin/cap/path.rb"
   if [[ -f "${original_vagrant_path_file}" ]] && [[ "$(sha256sum ${original_vagrant_path_file} | awk '{ print $1 }')" == "a094a01c0268614dcecd85f2cf8b34072594ffe8a8bbdddb430981e30104a6d2" ]]; then
     echo
-    echo "   ***************************************"
-    echo "   * We've detected you're running a     *"
-    echo "   * version of vagrant that has a bug.  *"
-    echo "   * We will fix this for you, but this  *"
-    echo "   * requires sudo. You will now be      *"
-    echo "   * prompted for your password.         *"
-    echo "   ***************************************"
+    echo "  We've detected you're running a"
+    echo "  version of vagrant that has a bug."
+    echo "  We will fix this for you, but this"
+    echo "  requires sudo. You will now be"
+    echo "  prompted for your password."
     echo
 
     # Now download working vagrant path file
@@ -103,9 +101,7 @@ check_dependencies() {
       sudo mv "${temp_vagrant_path_file}" "${original_vagrant_path_file}"
 
       echo
-      echo "   **********************************"
-      echo "   * Patch was successfully applied *"
-      echo "   **********************************"
+      echo "  Patch was successfully applied"
       echo
     fi
   fi
