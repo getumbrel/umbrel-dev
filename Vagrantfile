@@ -40,9 +40,6 @@ Vagrant.configure(2) do |config|
   config.vm.synced_folder '.', '/vagrant', disabled: true
 
   # Mount source into /code and use bindfs to re-map to /vagrant with correct ownership
-  # To resolve this error: uninitialized constant VagrantPlugins::HostDarwin::Cap::Version (NameError)
-  # sudo curl -o /opt/vagrant/embedded/gems/2.2.19/gems/vagrant-2.2.19/plugins/hosts/darwin/cap/path.rb https://raw.githubusercontent.com/hashicorp/vagrant/42db2569e32a69e604634462b633bb14ca20709a/plugins/hosts/darwin/cap/path.rb 
-  # More details can be found here: https://github.com/hashicorp/vagrant/issues/12583#issuecomment-985787134
   config.vm.synced_folder ".", "/code", type: "nfs"
 
   # Bindfs config.

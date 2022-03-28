@@ -77,9 +77,12 @@ check_dependencies() {
   done
 
   # Due a bug within vagrant (2.2.19) with missing constants
-  # we need to patch this ourselves
+  # we can auto-patch it for developers below
+  # The error will look like this: uninitialized constant VagrantPlugins::HostDarwin::Cap::Version (NameError) 
+  # More details can be found here: https://github.com/hashicorp/vagrant/issues/12583#issuecomment-985787134
   local -r original_vagrant_path_file="/opt/vagrant/embedded/gems/2.2.19/gems/vagrant-2.2.19/plugins/hosts/darwin/cap/path.rb"
-  if [[ -f "${original_vagrant_path_file}" ]] && [[ "$(sha256sum ${original_vagrant_path_file} | awk '{ print $1 }')" == "a094a01c0268614dcecd85f2cf8b34072594ffe8a8bbdddb430981e30104a6d2" ]]; then
+  local -r buggy_vagrant_path_sha256sum="a094a01c0268614dcecd85f2cf8b34072594ffe8a8bbdddb430981e30104a6d2"
+  if [[ -f "${original_vagrant_path_file}" ]] && [[ "$(sha256sum ${original_vagrant_path_file} | awk '{ print $1 }')" == "${buggy_vagrant_path_sha256sum}" ]]; then
     echo
     echo "  We've detected you're running a"
     echo "  version of vagrant that has a bug."
@@ -90,11 +93,12 @@ check_dependencies() {
 
     # Now download working vagrant path file
     local -r working_vagrant_path_file="https://raw.githubusercontent.com/hashicorp/vagrant/42db2569e32a69e604634462b633bb14ca20709a/plugins/hosts/darwin/cap/path.rb"
+    local -r working_vagrant_path_sha256sum="d982b3ebde081f3160374c9484880cb706435068133e1856042efcb44edf57f9"
     local -r temp_vagrant_path_file="${original_vagrant_path_file//path.rb/path_new.rb}"
     sudo curl --output "${temp_vagrant_path_file}" "${working_vagrant_path_file}"
 
     # Check patched vagrant path file matches expected checksum
-    if [[ "$(sha256sum ${temp_vagrant_path_file} | awk '{ print $1 }')" == "d982b3ebde081f3160374c9484880cb706435068133e1856042efcb44edf57f9" ]]; then
+    if [[ "$(sha256sum ${temp_vagrant_path_file} | awk '{ print $1 }')" == "${working_vagrant_path_sha256sum}" ]]; then
       # Make a backup of the origianl file
       local -r backup_vagrant_path_file="${original_vagrant_path_file//path.rb/path_backup.rb}"
       sudo mv "${original_vagrant_path_file}" "${backup_vagrant_path_file}"
