@@ -91,7 +91,7 @@ check_dependencies() {
     # Now download working vagrant path file
     local -r working_vagrant_path_file="https://raw.githubusercontent.com/hashicorp/vagrant/42db2569e32a69e604634462b633bb14ca20709a/plugins/hosts/darwin/cap/path.rb"
     local -r temp_vagrant_path_file="${original_vagrant_path_file//path.rb/path_new.rb}"
-    sudo curl -o "${temp_vagrant_path_file}" "${working_vagrant_path_file}"
+    sudo curl --output "${temp_vagrant_path_file}" "${working_vagrant_path_file}"
 
     # Check patched vagrant path file matches expected checksum
     if [[ "$(sha256sum ${temp_vagrant_path_file} | awk '{ print $1 }')" == "d982b3ebde081f3160374c9484880cb706435068133e1856042efcb44edf57f9" ]]; then
