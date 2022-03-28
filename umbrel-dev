@@ -37,26 +37,78 @@ if [[ "$(uname)" == "Darwin" ]]; then
   gnused=gsed
 fi
 
+determine_provider() {
+  if [[ "$(uname -sm)" == "Darwin arm64" ]]; then
+    echo "parallels"
+  else
+    echo "virtualbox"
+  fi
+}
+
 # Check required dependencies are installed
 # If not, fail with instructions on how to fix
 check_dependencies() {
-  for cmd in "git" "vagrant" "vboxmanage"; do
+  local deps=("git" "vagrant")
+
+  if [[ "${PROVIDER}" == "virtualbox" ]]; then
+    deps+=("vboxmanage")
+  elif [[ "${PROVIDER}" == "parallels" ]]; then
+    deps+=("prlctl")
+  fi
+
+  for cmd in "${deps[@]}"; do
     if ! command -v $cmd >/dev/null 2>&1; then
-      echo "This script requires Git, VirtualBox and Vagrant to be installed."
+      echo "  Command is missing: ${cmd}"
       echo
-      echo "If you use Homebrew you can install them with:"
+      echo "  To continue, please install '${cmd}' using:"
       echo
-      echo "  brew install git"
-      echo "  brew install --cask virtualbox vagrant"
+      if [[ "${cmd}" == "git" ]]; then
+        echo "  brew install git"
+      elif [[ "${cmd}" == "vagrant" ]]; then
+        echo "  brew install --cask vagrant"
+      elif [[ "${cmd}" == "vboxmanage" ]]; then
+        echo "  brew install --cask virtualbox"
+      elif [[ "${cmd}" == "prlctl" ]]; then
+        echo "  brew install --cask parallels"
+      fi
       echo
-      echo "Otherwise see:"
-      echo
-      echo "  https://git-scm.com/downloads"
-      echo "  https://virtualbox.org/wiki/Downloads"
-      echo "  https://www.vagrantup.com/downloads.html"
       exit 1
     fi
   done
+
+  # Due a bug within vagrant (2.2.19) with missing constants
+  # we can auto-patch it for developers below
+  # The error will look like this: uninitialized constant VagrantPlugins::HostDarwin::Cap::Version (NameError) 
+  # More details can be found here: https://github.com/hashicorp/vagrant/issues/12583#issuecomment-985787134
+  local -r original_vagrant_path_file="/opt/vagrant/embedded/gems/2.2.19/gems/vagrant-2.2.19/plugins/hosts/darwin/cap/path.rb"
+  local -r buggy_vagrant_path_sha256sum="a094a01c0268614dcecd85f2cf8b34072594ffe8a8bbdddb430981e30104a6d2"
+  if [[ -f "${original_vagrant_path_file}" ]] && [[ "$(sha256sum ${original_vagrant_path_file} | awk '{ print $1 }')" == "${buggy_vagrant_path_sha256sum}" ]]; then
+    echo
+    echo "  We've detected you're running a"
+    echo "  version of vagrant that has a bug."
+    echo "  We will fix this for you, but this"
+    echo "  requires sudo. You will now be"
+    echo "  prompted for your password."
+    echo
+
+    # Now download working vagrant path file
+    local -r working_vagrant_path_file="https://raw.githubusercontent.com/hashicorp/vagrant/42db2569e32a69e604634462b633bb14ca20709a/plugins/hosts/darwin/cap/path.rb"
+    local -r working_vagrant_path_sha256sum="d982b3ebde081f3160374c9484880cb706435068133e1856042efcb44edf57f9"
+    local -r temp_vagrant_path_file="${original_vagrant_path_file//path.rb/path_new.rb}"
+    sudo curl --output "${temp_vagrant_path_file}" "${working_vagrant_path_file}"
+
+    # Check patched vagrant path file matches expected checksum
+    if [[ "$(sha256sum ${temp_vagrant_path_file} | awk '{ print $1 }')" == "${working_vagrant_path_sha256sum}" ]]; then
+      # Make a backup of the origianl file
+      local -r backup_vagrant_path_file="${original_vagrant_path_file//path.rb/path_backup.rb}"
+      sudo mv "${original_vagrant_path_file}" "${backup_vagrant_path_file}"
+      sudo mv "${temp_vagrant_path_file}" "${original_vagrant_path_file}"
+
+      echo
+      echo "  Patch was successfully applied"
+      echo
+    fi
+  fi
 }
 
 # Run a command inside the development VM
@@ -90,6 +142,10 @@ check_umbrel_dev_environment() {
   done
 }
 
+PROVIDER="${UMBREL_DEV_PROVIDER:-$(determine_provider)}"
+
+export ARCH="${UMBREL_DEV_ARCH:-$(uname -m)}"
+
 # Check deps before running any commands
 check_dependencies
 
@@ -110,7 +166,12 @@ if [[ "$command" = "init" ]]; then
   cp "$(get_script_location)/Vagrantfile" .
 
   echo
-  vagrant plugin install --local vagrant-vbguest --plugin-version=0.24.0
+
+  if [[ "${PROVIDER}" == "parallels" ]]; then
+    vagrant plugin install --local vagrant-parallels
+  fi
+  
+  vagrant plugin install --local vagrant-bindfs
 
   echo
   echo "Cloning container repositories..."
@@ -139,19 +200,16 @@ fi
 if [[ "$command" = "boot" ]]; then
   check_umbrel_dev_environment
 
-  # Update some packages on boot to prevent issues with vagrant-vbguest.
-  # https://github.com/dotless-de/vagrant-vbguest/issues/351#issuecomment-545391139
-  vagrant up --no-provision || true # This will sometimes fail
-  vagrant ssh -c "sudo apt-get update -y && sudo apt-get install -y build-essential linux-headers-amd64 linux-image-amd64 python-pip"
-  vagrant halt
-
-  vagrant up
+  vagrant up --provider "${PROVIDER}"
   exit
 fi
 
 # Shutdown the development VM
 if [[ "$command" = "shutdown" ]]; then
   check_umbrel_dev_environment
+
+  run_in_vm "sudo scripts/stop || true"
+
   vagrant halt
   exit
 fi

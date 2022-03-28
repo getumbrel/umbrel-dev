@@ -22,20 +22,47 @@ umbrelLogo = <<-TEXT
 TEXT
 
 Vagrant.configure(2) do |config|
-  # Install required plugins
-  config.vagrant.plugins = {"vagrant-vbguest" => {"version" => "0.24.0"}}
+  # Define VM compute resources
+  CORES = ENV.fetch("UMBREL_DEV_CORES", 2)
+  MEMORY = ENV.fetch("UMBREL_DEV_MEMORY", 2048)
 
   # Setup VM
   config.vm.define "umbrel-dev"
-  config.vm.box = "debian/buster64"
+  config.vm.box = (ENV.fetch("ARCH", "x86_64").include?("arm")) ? "avi0xff/debian10-arm64" : "debian/buster64"
   config.vm.hostname = "umbrel-dev"
-  config.vm.network "public_network", bridge: "en0: Wi-Fi (AirPort)"
-  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+  config.vm.network "public_network", bridge: "en0: Wi-Fi"
+  # Private network needed for NFS share
+  # The 'Vagrant core NFS helper' will use an IP in the 192.168.56.0/21 network.
+  # We assign an IP in the middle of that range that is unlikely to be in use
+  config.vm.network "private_network", ip: "192.168.56.56"
 
-  # Configure VM resources
+  # Disable sync of default vagrant folder
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+
+  # Mount source into /code and use bindfs to re-map to /vagrant with correct ownership
+  config.vm.synced_folder ".", "/code", type: "nfs"
+
+  # Bindfs config.
+  config.bindfs.force_empty_mountpoints = true
+  config.bindfs.default_options = {
+    force_user: 'vagrant',
+    force_group: 'vagrant',
+    # Everything is owned by vagrant:vagrant and Umbrel will chown from time to time
+    # Causing an operation not permitted error, this ignores that error
+    o: 'chown-ignore'
+  }
+  config.bindfs.bind_folder "/code", "/vagrant"
+
+  # VirtualBox config.
   config.vm.provider "virtualbox" do |vb|
-    vb.customize ["modifyvm", :id, "--cpus", "2"]
-    vb.customize ["modifyvm", :id, "--memory", "2048"]
+    vb.customize ["modifyvm", :id, "--cpus", CORES]
+    vb.customize ["modifyvm", :id, "--memory", MEMORY]
+  end
+
+  # Parallels config.
+  config.vm.provider "parallels" do |parallels|
+    parallels.cpus = CORES
+    parallels.memory = MEMORY
   end
 
   # Update package lists
@@ -58,7 +85,7 @@ Vagrant.configure(2) do |config|
 
   # Install Umbrel
   config.vm.provision "shell", inline: <<-SHELL
-    apt-get install -y fswatch rsync jq
+    apt-get install -y fswatch rsync jq git
     cd /vagrant/getumbrel/umbrel
     sudo NETWORK=regtest ./scripts/configure
     docker-compose build --parallel
@@ -68,8 +95,6 @@ Vagrant.configure(2) do |config|
   # Start Umbrel on boot
   config.vm.provision "shell", run: 'always', inline: <<-SHELL
     cd /vagrant/getumbrel/umbrel
-    sudo chown -R 1000:1000 .
-    chmod -R 700 tor/data/*
     ./scripts/start
   SHELL
 
