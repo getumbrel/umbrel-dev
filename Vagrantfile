@@ -75,12 +75,19 @@ Vagrant.configure(2) do |config|
     sudo apt-get install -y curl python3-pip libffi-dev
     curl -fsSL https://get.docker.com | sudo sh
     sudo usermod -aG docker vagrant
+    pip3 install -U "bcrypt<4.0.0"
     pip3 install docker-compose
   SHELL
 
   # Install Avahi
   config.vm.provision "shell", inline: <<-SHELL
     apt-get install -y avahi-daemon avahi-discover libnss-mdns
+  SHELL
+
+  # Install yq
+  config.vm.provision "shell", inline: <<-SHELL
+    wget https://github.com/mikefarah/yq/releases/download/${VERSION}/${BINARY}.tar.gz -O - |\
+    tar xz && mv ${BINARY} /usr/bin/yq
   SHELL
 
   # Install Umbrel
